@@ -30,10 +30,10 @@ Pure TypeScript, zero React dependencies. Fully unit-testable in isolation.
 
 | Module | Responsibility |
 |---|---|
-| `tiles.ts` | Tile definitions, suit/value types, dora sequence logic |
+| `tiles.ts` | Tile definitions, suit/value types, dora sequence logic (including honor wrap rules) |
 | `hand.ts` | Validates whether a tile set forms a complete winning hand (standard, chiitoitsu, kokushi) |
 | `yaku.ts` | Detects all valid yaku for a given hand + context (seat wind, round wind, open/closed) |
-| `fu.ts` | Calculates fu from hand structure + wait type (assumes best-case wait for player) |
+| `fu.ts` | Calculates fu from hand structure; enumerates all valid decompositions and selects the highest-scoring one |
 | `scorer.ts` | Combines han + fu → point value |
 | `generator.ts` | Builds valid puzzles with ≥2 winning hands |
 
@@ -53,7 +53,7 @@ React components rendering the tile grid, selection state, score reveal, and sha
 type Suit = 'man' | 'pin' | 'sou' | 'wind' | 'dragon'
 type NumberValue = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9
 type WindValue = 'E' | 'S' | 'W' | 'N'
-type DragonValue = 'W' | 'G' | 'R'  // White, Green, Red
+type DragonValue = 'W' | 'G' | 'R'  // White (Haku), Green (Hatsu), Red (Chun)
 
 type Tile =
   | { suit: 'man' | 'pin' | 'sou'; value: NumberValue }
@@ -61,7 +61,9 @@ type Tile =
   | { suit: 'dragon'; value: DragonValue }
 ```
 
-No aka-dora. Dora are identified at scoring time by checking tiles against `doraIndicators`.
+**Important:** `WindValue` and `DragonValue` both include `'W'` (West wind vs. White dragon). All tile logic — display names, dora sequences, yaku checks — must always discriminate on `suit` before `value`.
+
+No aka-dora. Dora are identified at scoring time by checking each tile against `doraIndicators` using the dora sequence rules (see Scoring).
 
 ### Melds & Hands
 
@@ -77,12 +79,14 @@ type Hand =
 
 No `winningTile`, no `isRiichi`, no `isTsumo` — these are not applicable to this game format.
 
+**Kans:** A `kan` meld contains 4 identical tiles. Fu scoring: closed kan = 16 base fu (doubled to 32 if tiles are terminals/honors); open kan = 8 base fu (doubled to 16 if terminals/honors). No new dora indicator is drawn when a kan appears in a puzzle — dora indicators are fixed at puzzle generation time.
+
 ### Puzzle
 
 ```ts
 type Puzzle = {
-  tiles: Tile[]           // 24 tiles shown to the player
-  lockedMelds: Meld[]     // 0–2 pre-committed open melds
+  tiles: Tile[]           // all 24 tiles shown to the player, INCLUDING locked meld tiles
+  lockedMelds: Meld[]     // 0–2 pre-committed open melds (their tiles are a subset of `tiles`)
   doraIndicators: Tile[]  // 1 tile (80% probability) or 2 tiles (20%)
   seatWind: WindValue
   roundWind: WindValue
@@ -98,6 +102,8 @@ type Solution = {
 }
 ```
 
+**Tile pool and selection:** `tiles` always contains all 24 tiles, including the tiles that belong to any `lockedMelds`. Locked meld tiles are pre-populated in the player's hand area and cannot be deselected. The player must select an additional `14 - (lockedMelds tiles count)` tiles from the remaining pool: 14 tiles total with no locked melds, 11 with one locked 3-tile meld, 8 with two locked 3-tile melds.
+
 ---
 
 ## Puzzle Generation Algorithm
@@ -109,23 +115,31 @@ The generator builds puzzles backward from valid solutions:
 3. **Generate hand B** — independently generate a different valid hand that shares some tiles with A but is not identical
 4. **Decide open melds** — randomly assign 0–2 melds as open, respecting yaku that require closed hands (e.g. pinfu, iipeikou)
 5. **Merge + pad** — combine A and B tiles into a pool, fill to 24 with noise tiles
-6. **Validate** — run the full hand validator across relevant tile combinations to confirm both hands are reachable and no unintended extra solutions exist. Retry if validation fails (bounded retries).
-7. **Score all solutions** — rank by points descending; the top-scorer is the "optimal" answer
+6. **Validate** — a "valid solution" is any 14-tile subset of the pool (including all locked meld tiles) that forms a complete winning hand with at least one yaku. Run the full hand validator to confirm both intended hands are reachable. If any valid solution scores higher than the intended top hand, the puzzle is invalid — reject and regenerate. Retry on failure (bounded retries, e.g. 20 attempts before changing the seed).
+7. **Score all solutions** — rank by points descending; the true top-scorer is the "optimal" answer shown on the result screen
 8. **Shuffle** — randomize tile display order before presenting
 
-The "optimal" vs "decoy" distinction is not baked into generation — it emerges purely from scoring.
+The "optimal" vs "other" distinction is not baked into generation — it emerges purely from scoring.
 
-**Dora:** After generating the tile pool, draw 1 (80%) or 2 (20%) dora indicators. The actual dora tile is the next tile in sequence after the indicator.
+**Dora:** After generating the tile pool, draw 1 (80%) or 2 (20%) dora indicator tiles. The actual dora tile is the next tile in sequence after the indicator (see Scoring for wrap rules).
 
 ---
 
 ## Scoring
 
-- **Han:** Sum of all applicable yaku han values + dora count
-- **Fu:** Calculated from hand structure (meld types, pair type, wait type). Best-case wait assumed for the player (fairest interpretation).
+- **Han:** Sum of all applicable yaku han values + dora count. Dora do not contribute han to yakuman hands — yakuman value is fixed regardless of dora.
+- **Fu:** Calculated from hand structure (meld types, pair type, wait type). When a hand admits multiple valid decompositions (different meld breakdowns or wait types), the engine selects the decomposition that produces the highest point total.
 - **Points:** Standard Riichi Mahjong point table (han × fu → points). Dealer/non-dealer distinction is omitted for simplicity — a fixed non-dealer table is used.
-- **Yakuman:** Scored at maximum value. If kokushi is achievable, it always dominates.
-- **Chiitoitsu:** Always 2 han, 25 fu (special fixed scoring).
+- **Yakuman:** Scored at maximum value (~32,000 pts non-dealer). If kokushi is achievable in the pool, it will always be the top-scoring solution.
+- **Chiitoitsu:** Always scored as 2 han, 25 fu as the base. Additional yaku that apply to the hand (e.g. tanyao, honitsu, chinitsu) stack normally on top of the 2 han base.
+
+### Dora Sequence Rules
+
+The dora tile is the tile immediately following the indicator in sequence:
+
+- **Numbered suits (man/pin/sou):** 1→2→3→4→5→6→7→8→9→1 (wraps)
+- **Winds:** E→S→W→N→E (wraps)
+- **Dragons:** W→G→R→W (White→Green→Red→White, wraps)
 
 ---
 
@@ -140,14 +154,16 @@ The "optimal" vs "decoy" distinction is not baked into generation — it emerges
 ├─────────────────────────────────┤
 │ [  tile pool: 24 tiles grid  ]  │  ← click to select/deselect
 ├─────────────────────────────────┤
-│ Your hand: [selected tiles...]  │  ← 14 slots, fills as selected
-│                    [COMMIT] →   │  ← active when 14 tiles selected
+│ Your hand: [selected tiles...]  │  ← 14 slots total; locked meld
+│                                 │    tiles pre-filled, unremovable
+│                    [COMMIT] →   │  ← active when all 14 slots filled
 └─────────────────────────────────┘
 ```
 
-- Locked open melds are visually distinct (rotated or labeled) and pre-populated in the hand area
+- Locked open melds are visually distinct (rotated or labeled) and pre-populated in the hand area; they cannot be deselected
+- The number of free selection slots = 14 minus the tile count of all locked melds
 - Selecting a tile highlights it; clicking again deselects
-- COMMIT button is active only when exactly 14 tiles are selected (including locked meld tiles)
+- COMMIT button is active only when all 14 hand slots are filled
 - Submitting an invalid hand (no valid structure, or no yaku) shows an inline error message — the player can adjust their selection. Timer keeps running. Unlimited retries.
 
 ### Score Reveal: Score First, Details on Demand
@@ -196,9 +212,10 @@ Minimal: game title, **Today's Puzzle** button (greyed out with your score shown
 
 ## Daily Puzzle
 
-- Seed: `PRNG(sha256(YYYY-MM-DD + SECRET_SALT))` — deterministic, same puzzle worldwide for a given date
+- Seed: `PRNG(sha256(YYYY-MM-DD + PUZZLE_SALT))` — deterministic, same puzzle worldwide for a given date. The salt is shipped client-side and is not secret in a security sense; its purpose is to prevent trivial date-guessing of puzzle content without inspecting the source.
 - Puzzle number: count of days since launch date
 - Result stored in `localStorage` — revisiting shows your result, not a fresh puzzle
+- **Timer behavior:** The timer is wall-clock based. If the user navigates away and returns mid-puzzle (daily mode), elapsed time continues to accumulate. In practice mode, navigating away and returning discards the in-progress puzzle and starts fresh.
 
 ---
 
@@ -222,7 +239,8 @@ Kanquer #42 ⭐
 - Riichi declaration mechanic
 - Tsumo / ron distinction
 - Aka-dora (red fives)
+- Ippatsu, double riichi, or other riichi-dependent yaku
+- New dora indicator draws on kan (dora indicators are fixed at puzzle generation time)
 - User accounts or server-side leaderboards
 - Difficulty settings
 - Multiplayer or real-time competition
-- Ippatsu, double riichi, or other riichi-dependent yaku
