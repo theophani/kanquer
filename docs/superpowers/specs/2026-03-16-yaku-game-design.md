@@ -68,7 +68,7 @@ No aka-dora. Dora are identified at scoring time by checking each tile against `
 ### Melds & Hands
 
 ```ts
-type MeldType = 'sequence' | 'triplet' | 'kan' | 'pair'
+type MeldType = 'sequence' | 'triplet' | 'pair'
 type Meld = { type: MeldType; tiles: Tile[]; open: boolean }
 
 type Hand =
@@ -79,7 +79,7 @@ type Hand =
 
 No `winningTile`, no `isRiichi`, no `isTsumo` — these are not applicable to this game format.
 
-**Kans:** A `kan` meld contains 4 identical tiles. Fu scoring: closed kan = 16 base fu (doubled to 32 if tiles are terminals/honors); open kan = 8 base fu (doubled to 16 if terminals/honors). No new dora indicator is drawn when a kan appears in a puzzle — dora indicators are fixed at puzzle generation time.
+**Kans are not supported.** A complete hand with a kan requires 15 tiles (4 + 3 + 3 + 3 + 2), but this game always operates on a fixed 14-tile selection. Kans are structurally impossible and excluded from the data model entirely.
 
 ### Puzzle
 
@@ -240,7 +240,8 @@ Kanquer #42 ⭐
 - Tsumo / ron distinction
 - Aka-dora (red fives)
 - Ippatsu, double riichi, or other riichi-dependent yaku
-- New dora indicator draws on kan (dora indicators are fixed at puzzle generation time)
+- Kans (a hand with a kan requires 15 tiles; this game fixes selection at 14)
+- Yaku that require kans: sankantsu, suukantsu
 - User accounts or server-side leaderboards
 - Difficulty settings
 - Multiplayer or real-time competition
