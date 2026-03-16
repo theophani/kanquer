@@ -812,6 +812,19 @@ describe('Chiitoitsu', () => {
     expect(yaku.map(y => y.name)).toContain('Chiitoitsu')
     expect(yaku.find(y => y.name === 'Chiitoitsu')!.han).toBe(2)
   })
+  it('detects honitsu on chiitoitsu (one numbered suit + honors)', () => {
+    const hand: Hand = { structure: 'chiitoitsu', pairs: [[m(1),m(1)],[m(3),m(3)],[m(5),m(5)],[m(7),m(7)],[m(9),m(9)],[E,E],[S,S]], seatWind: 'E', roundWind: 'E' }
+    const yaku = detectYaku(hand)
+    expect(yaku.map(y => y.name)).toContain('Honitsu')
+    expect(yaku.find(y => y.name === 'Honitsu')!.han).toBe(3)
+  })
+  it('detects tsuuiisou on chiitoitsu (yakuman, no chiitoitsu stacking)', () => {
+    const hand: Hand = { structure: 'chiitoitsu', pairs: [[E,E],[S,S],[W,W],[N,N],[Haku,Haku],[Hatsu,Hatsu],[Chun,Chun]], seatWind: 'E', roundWind: 'E' }
+    const yaku = detectYaku(hand)
+    expect(yaku.map(y => y.name)).toContain('Tsuuiisou')
+    expect(yaku.find(y => y.name === 'Tsuuiisou')!.han).toBe(13)
+    expect(yaku.map(y => y.name)).not.toContain('Chiitoitsu')
+  })
 })
 
 describe('Kokushi', () => {
@@ -865,8 +878,11 @@ function isOpen(hand: { structure: 'standard'; melds: Meld[] }): boolean {
 
 // ── Chiitoitsu ───────────────────────────────────────────────────────────────
 function detectChiitoitsuYaku(hand: Extract<Hand, { structure: 'chiitoitsu' }>): YakuResult[] {
-  const yaku: YakuResult[] = [{ name: 'Chiitoitsu', han: 2, openHan: null }]
   const tiles = hand.pairs.flat()
+  // Tsuuiisou: all honors (yakuman — return early, no stacking)
+  if (tiles.every(isHonor))
+    return [{ name: 'Tsuuiisou', han: YAKUMAN, openHan: null }]
+  const yaku: YakuResult[] = [{ name: 'Chiitoitsu', han: 2, openHan: null }]
   const suits = new Set(tiles.map(t => t.suit))
   const numSuits = [...suits].filter(s => s === 'man' || s === 'pin' || s === 'sou')
   // Tanyao
@@ -1609,12 +1625,11 @@ describe('generatePuzzle', () => {
     expect(puzzle.doraIndicators.length).toBeLessThanOrEqual(2)
   })
 
-  it('top solution is actually the highest-scoring hand in the pool', () => {
+  it('solutions are sorted by score descending', () => {
     const puzzle = generatePuzzle(42)
-    const top = puzzle.solutions[0]
-    // Verify no solution in the puzzle scores higher
-    for (const sol of puzzle.solutions) {
-      expect(sol.points).toBeLessThanOrEqual(top.points)
+    // Verify solutions are in descending point order
+    for (let i = 0; i < puzzle.solutions.length - 1; i++) {
+      expect(puzzle.solutions[i].points).toBeGreaterThanOrEqual(puzzle.solutions[i + 1].points)
     }
   })
 
@@ -1781,13 +1796,15 @@ const TEMPLATES: HandTemplate[] = [
 
 // ── Main generator ───────────────────────────────────────────────────────────
 export function generatePuzzle(seed: number, maxRetries = 20): Puzzle {
-  for (let attempt = 0; attempt < maxRetries; attempt++) {
+  // Iterate across a range of seeds to avoid unbounded recursion
+  const hardCap = maxRetries * 5
+  for (let attempt = 0; attempt < hardCap; attempt++) {
     const rng = mulberry32(seed + attempt * 1000)
     const puzzle = tryGenerate(rng)
     if (puzzle) return puzzle
   }
-  // Fallback: increment seed and try again
-  return generatePuzzle(seed + 1, maxRetries)
+  // Should be unreachable with a well-tuned generator; hard error beats silent hang
+  throw new Error(`generatePuzzle: failed after ${hardCap} attempts (seed=${seed})`)
 }
 
 function tryGenerate(rng: () => number): Puzzle | null {
