@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import {
-  m, p, s, wind, dragon,
+  m, p, s,
   E, S, W, N, Haku, Hatsu, Chun,
   isTerminal, isHonor, isSimple,
   tileEquals, sortTiles, doraOf, countDora,

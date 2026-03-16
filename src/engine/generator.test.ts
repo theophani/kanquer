@@ -1,6 +1,5 @@
 import { describe, it, expect } from 'vitest'
 import { generatePuzzle } from './generator'
-import { scoreSelection } from './scorer'
 
 describe('generatePuzzle', () => {
   it('returns a puzzle with 24 tiles', () => {

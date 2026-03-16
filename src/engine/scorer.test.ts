@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { m, p, s, E, Haku } from './tiles'
+import { m, p, s, E, wind, dragon } from './tiles'
 import { scoreSelection } from './scorer'
 
 const ctx = { seatWind: 'S' as const, roundWind: 'E' as const }
@@ -38,7 +38,7 @@ describe('scoreSelection', () => {
   })
 
   it('yakuman returns 32000 points', () => {
-    const kokushiTiles = [m(1),m(9),p(1),p(9),s(1),s(9),E,{suit:'wind',value:'S'},{suit:'wind',value:'W'},{suit:'wind',value:'N'},{suit:'dragon',value:'W'},{suit:'dragon',value:'G'},{suit:'dragon',value:'R'},m(1)]
+    const kokushiTiles = [m(1),m(9),p(1),p(9),s(1),s(9),E,wind('S'),wind('W'),wind('N'),dragon('W'),dragon('G'),dragon('R'),m(1)]
     const sol = scoreSelection(kokushiTiles, [], [], { seatWind: 'E', roundWind: 'E' })!
     expect(sol.points).toBe(32000)
   })

@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { m, p, s, E, S, Haku } from './tiles'
+import { m, p, s, E, Haku } from './tiles'
 import { calculateFu } from './fu'
 import type { Hand } from './types'
 

@@ -1,5 +1,5 @@
 import type { Tile, Meld, Puzzle, Solution, WindValue } from './types'
-import { m, p, s, wind, dragon, E, S, W, N, Haku, Hatsu, Chun, sortTiles, tileEquals } from './tiles'
+import { wind, Haku, Hatsu, Chun, sortTiles, tileEquals } from './tiles'
 import { scoreSelection } from './scorer'
 
 // ── Mulberry32 PRNG ──────────────────────────────────────────────────────────

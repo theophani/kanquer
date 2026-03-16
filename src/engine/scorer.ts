@@ -1,4 +1,4 @@
-import type { Tile, Meld, Solution, WindValue, YakuResult } from './types'
+import type { Tile, Meld, Solution, WindValue } from './types'
 import { getAllDecompositions } from './hand'
 import { detectYaku } from './yaku'
 import { calculateFu } from './fu'

@@ -3,7 +3,6 @@ import { m, p, s, E, S, W, N, Haku, Hatsu, Chun } from './tiles'
 import { detectYaku } from './yaku'
 import type { Hand } from './types'
 
-const closed = false
 const open = true
 
 // Helper to build a standard hand

@@ -1,4 +1,4 @@
-import type { Hand, Meld, Tile, YakuResult, WindValue } from './types'
+import type { Hand, Meld, Tile, YakuResult } from './types'
 import { tileEquals, isTerminalOrHonor, isHonor, isSimple, isTerminal } from './tiles'
 
 const YAKUMAN = 13 // sentinel han value for yakuman
