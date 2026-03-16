@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import { useGameStore } from './store/gameStore'
 import { generatePuzzle } from './engine/generator'
-import { seedFromPuzzleNumber, seedFromHex, puzzleNumberFromDate } from './engine/seed'
+import { seedFromPuzzleNumber, seedFromHex } from './engine/seed'
 import HomePage from './components/HomePage'
 import GamePage from './components/GamePage'
 
