@@ -1,2 +1,15 @@
 .superpowers/
 .worktrees/
+
+# Vite
+dist
+.vite
+
+# npm
+node_modules
+package-lock.json
+
+# Editor
+.env
+.env.local
+.env.*.local
