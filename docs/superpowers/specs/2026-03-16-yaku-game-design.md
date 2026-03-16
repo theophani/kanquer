@@ -212,9 +212,10 @@ Minimal: game title, **Today's Puzzle** button (greyed out with your score shown
 
 ## Daily Puzzle
 
-- Seed: `PRNG(sha256(YYYY-MM-DD + PUZZLE_SALT))` — deterministic, same puzzle worldwide for a given date. The salt is shipped client-side and is not secret in a security sense; its purpose is to prevent trivial date-guessing of puzzle content without inspecting the source.
-- Puzzle number: count of days since launch date
-- Result stored in `localStorage` — revisiting shows your result, not a fresh puzzle
+- **Puzzle number:** count of days since launch date (e.g. puzzle #1 = launch day, #42 = 42 days later)
+- **Seed:** `PRNG(sha256(YYYY-MM-DD + PUZZLE_SALT))` — the date string (UTC, `YYYY-MM-DD` format) is the primary input, making the puzzle number and seed directly tied to the calendar date. The salt is shipped client-side and is not secret in a security sense; its purpose is to prevent trivial date-guessing of puzzle content without inspecting the source.
+- **URL:** Daily puzzles are accessible at `/?p=<puzzle-number>` (e.g. `/?p=42`). The app derives the date from the puzzle number and generates the same puzzle deterministically. This allows friends to replay any past daily puzzle via a shared link.
+- Result stored in `localStorage` — revisiting today's puzzle shows your result, not a fresh attempt. Past puzzles (via link) are always playable fresh.
 - **Timer behavior:** The timer is wall-clock based. If the user navigates away and returns mid-puzzle (daily mode), elapsed time continues to accumulate. In practice mode, navigating away and returning discards the in-progress puzzle and starts fresh.
 
 ---
@@ -226,10 +227,13 @@ Spoiler-free Wordle-style share text. No tiles or yaku names revealed.
 ```
 Kanquer #42 ⭐
 12,000 pts · 1:42
+https://kanquer.app/?p=42
 ```
 
 - ⭐ appears only if the player found the optimal hand
 - No ⭐ if they found a valid but suboptimal hand
+- The URL lets recipients open and play that exact puzzle
+- Practice mode puzzles use `/?seed=<hex>` instead of a puzzle number
 - Copied to clipboard via the Share button on the result screen
 
 ---
