@@ -52,4 +52,25 @@ describe('scoreSelection', () => {
     const nonDealer = scoreSelection(tiles, [], [m(1)], ctxNonDealer)!
     expect(dealer.points).toBeGreaterThan(nonDealer.points)
   })
+
+  it('detects Iipeikou and scores correctly', () => {
+    // [2M 3M 4M] [2M 3M 4M] [6P 7P 8P] [1S 2S 3S] pair: dragon('G') (Hatsu)
+    // Hatsu pair does NOT give Yakuhai (need a triplet); s(1) blocks Tanyao; Hatsu pair blocks Pinfu
+    // Only yaku: Iipeikou (1 han closed)
+    const tiles = [m(2),m(3),m(4), m(2),m(3),m(4), p(6),p(7),p(8), s(1),s(2),s(3), dragon('G'),dragon('G')]
+    const sol = scoreSelection(tiles, [], [], ctx)!
+    expect(sol).not.toBeNull()
+    expect(sol.yaku.map(y => y.name)).toContain('Iipeikou')
+    expect(sol.han).toBeGreaterThanOrEqual(1)
+  })
+
+  it('detects Sanshoku Doukou for the same triplet in all three suits', () => {
+    // [3M 3M 3M] [3P 3P 3P] [3S 3S 3S] [5M 6M 7M] pair: m(9) m(9)
+    // Sanshoku Doukou (2 han); sequence present so Toitoi does not apply
+    const tiles = [m(3),m(3),m(3), p(3),p(3),p(3), s(3),s(3),s(3), m(5),m(6),m(7), m(9),m(9)]
+    const sol = scoreSelection(tiles, [], [], ctx)!
+    expect(sol).not.toBeNull()
+    expect(sol.yaku.map(y => y.name)).toContain('Sanshoku Doukou')
+    expect(sol.han).toBeGreaterThanOrEqual(2)
+  })
 })
