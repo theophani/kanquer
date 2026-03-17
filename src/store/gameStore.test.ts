@@ -119,9 +119,8 @@ describe('gameStore', () => {
     const fifteenth = puzzle.tiles.findIndex(
       (_, i) => !useGameStore.getState().selectedIndices.has(i) && !lockedIndices.has(i)
     )
-    if (fifteenth !== -1) {
-      useGameStore.getState().toggleTile(fifteenth)
-      expect(useGameStore.getState().selectedIndices.size).toBe(14)
-    }
+    expect(fifteenth).not.toBe(-1)
+    useGameStore.getState().toggleTile(fifteenth)
+    expect(useGameStore.getState().selectedIndices.size).toBe(14)
   })
 })
