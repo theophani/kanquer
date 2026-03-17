@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import { useGameStore } from './store/gameStore'
 import { generatePuzzle } from './engine/generator'
-import { seedFromPuzzleNumber, seedFromHex, puzzleNumberFromDate } from './engine/seed'
+import { seedFromPuzzleNumber, seedFromHex, puzzleNumberFromDate, dateFromPuzzleNumber } from './engine/seed'
 import HomePage from './components/HomePage'
 import GamePage from './components/GamePage'
 
@@ -16,10 +16,26 @@ export default function App() {
 
     if (pathname === '/daily') {
       const n = puzzleNumberFromDate(new Date())
+      window.history.replaceState({}, '', `/?p=${n}`)
+
+    } else if (pathname === '/random') {
+      const seed = Math.floor(Math.random() * 0xFFFFFFFF)
+      const seedHex = seed.toString(16).padStart(8, '0')
+      window.history.replaceState({}, '', `/?seed=${seedHex}`)
+
+    } else if (pParam) {
+      const n = parseInt(pParam, 10)
+      if (isNaN(n)) {
+        window.history.replaceState({}, '', '/')
+        return
+      }
+
       const seed = seedFromPuzzleNumber(n)
       const puzz = generatePuzzle(seed)
-      const key = `kanquer-daily-${new Date().toISOString().slice(0, 10)}`
+      const puzzleDate = dateFromPuzzleNumber(n).toISOString().slice(0, 10)
+      const key = `kanquer-daily-${puzzleDate}`
       const cached = localStorage.getItem(key)
+
       if (cached) {
         const saved = JSON.parse(cached)
         if (Array.isArray(saved.selectedIndices)) {
@@ -29,19 +45,6 @@ export default function App() {
         }
       } else {
         loadPuzzle(puzz, 'daily')
-      }
-      window.history.replaceState({}, '', `/?p=${n}`)
-
-    } else if (pathname === '/random') {
-      const seed = Math.floor(Math.random() * 0xFFFFFFFF)
-      const seedHex = seed.toString(16).padStart(8, '0')
-      loadPuzzle(generatePuzzle(seed), 'practice')
-      window.history.replaceState({}, '', `/?seed=${seedHex}`)
-
-    } else if (pParam) {
-      const n = parseInt(pParam, 10)
-      if (!isNaN(n)) {
-        loadPuzzle(generatePuzzle(seedFromPuzzleNumber(n)), 'daily')
       }
 
     } else if (seedParam) {
