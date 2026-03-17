@@ -8,6 +8,7 @@ export default function GamePage() {
   const { phase } = useGameStore()
   return (
     <div className="game-page">
+      {/* TO DO: Add link back to home page, daily, random */}
       <ContextBar />
       <TileGrid />
       <HandSlots />

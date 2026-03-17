@@ -53,6 +53,8 @@ export default function App() {
     // No params → show home screen
   }, [])
 
+  // TO DO: Why is there a flash of the home page on load? Can we prevent that?
+
   if (!puzzle) return <HomePage />
   return <GamePage />
 }

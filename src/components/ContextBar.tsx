@@ -57,6 +57,8 @@ export default function ContextBar() {
       {puzzle.doraIndicators.map((t, i) => (
         <span key={i} className={`tile ${t.suit}`}>{tileDisplay(t)}</span>
       ))}
+      {/* TO DO: Show the puzzle number or HEX */}
+      {/* TO DO: The timer should save between sessions */}
       <span className="timer">{mm}:{ss}</span>
     </div>
   )

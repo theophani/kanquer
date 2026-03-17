@@ -35,6 +35,7 @@ export default function ScoreReveal() {
               <span>{y.han} han</span>
             </div>
           ))}
+          {/* TO DO: Show fu breakdown too */}
           <div className="yaku-total">
             Total: {submittedSolution.han} han {submittedSolution.fu} fu → {submittedSolution.points.toLocaleString()} pts
           </div>

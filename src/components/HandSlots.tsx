@@ -23,6 +23,8 @@ export default function HandSlots() {
             {tileDisplay(tile)}
           </span>
         ))}
+        {/* TO DO: The tiles should be in the order they were selected */}
+        {/* TO DO: The tiles should unselectable by clicking */}
         {freeTiles.map((tile, i) => (
           <span key={`free-${i}`} className={`tile ${tile.suit} selected`}>
             {tileDisplay(tile)}
