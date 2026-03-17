@@ -211,7 +211,7 @@ else ceil(raw/100)*100           else ceil(ceil(raw/100)*100 * 1.5 / 100)*100
 
 The dealer regular-hand formula is: compute non-dealer points first (`ndPts = ceil(raw/100)*100`), then `ceil(ndPts * 1.5 / 100) * 100`. This ensures rounding is applied correctly at each step. The mangan cap uses the same `raw >= 8000` threshold as non-dealer (since `8000 * 1.5 = 12000`).
 
-**`scoreSelection`:** add `dealer = ctx.seatWind === 'East'` and pass it to `hanFuToPoints`.
+**`scoreSelection`:** add `const dealer = ctx.seatWind === 'E'` and pass it to `hanFuToPoints`. (Note: `WindValue` uses single-letter codes — `'E'` not `'East'`.)
 
 ### `generator.ts`
 
