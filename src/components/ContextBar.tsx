@@ -16,7 +16,12 @@ function windLabel(w: string): string {
 
 export default function ContextBar() {
   const { puzzle, phase, elapsed, pauseTimer, resumeTimer } = useGameStore()
-  const [display, setDisplay] = useState(0)
+  const [display, setDisplay] = useState(() => {
+    const { timerStartedAt, accumulatedMs } = useGameStore.getState()
+    return Math.floor(
+      (accumulatedMs + (timerStartedAt ? Date.now() - timerStartedAt : 0)) / 1000
+    )
+  })
 
   // Tick the display every second while playing
   useEffect(() => {
