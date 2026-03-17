@@ -14,8 +14,9 @@ body { margin: 0; font-family: system-ui, sans-serif; background: #1a1a2e; color
 .dora-tile { background: #e67e22; color: #fff; padding: 2px 6px; border-radius: 4px; margin-left: 4px; }
 .timer { margin-left: auto; font-weight: bold; color: #f39c12; }
 
+button.tile { cursor: pointer; }
 .tile-grid { display: flex; flex-wrap: wrap; gap: 6px; padding: 12px; background: #0d0d1a; border-radius: 6px; margin-bottom: 12px; }
-.tile { width: 44px; height: 56px; border: 2px solid #333; border-radius: 4px; background: #222; color: #eee; font-size: 0.85rem; cursor: pointer; display: flex; align-items: center; justify-content: center; font-weight: bold; }
+.tile { width: 44px; height: 56px; border: 2px solid #333; border-radius: 4px; background: #222; color: #eee; font-size: 0.85rem; display: flex; align-items: center; justify-content: center; font-weight: bold; cursor: default; }
 .tile.man { color: #e74c3c; }
 .tile.pin { color: #27ae60; }
 .tile.sou { color: #3498db; }
@@ -28,8 +29,11 @@ body { margin: 0; font-family: system-ui, sans-serif; background: #1a1a2e; color
 .hand-area { background: #0d0d1a; border-radius: 6px; padding: 12px; }
 .hand-slots { display: flex; flex-wrap: wrap; gap: 6px; min-height: 64px; margin-bottom: 12px; }
 .error-message { color: #e74c3c; font-size: 0.9rem; margin: 8px 0; }
-.commit-button { width: 100%; padding: 12px; font-size: 1rem; background: #27ae60; color: #fff; border: none; border-radius: 6px; cursor: pointer; }
-.commit-button:disabled { background: #555; cursor: default; }
+.hand-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 24px; }
+.reset-button { padding: 12px; font-size: 1rem; background: #2980b9; color: #fff; border: none; border-radius: 6px; cursor: pointer; }
+.reset-button:disabled { background: #555; color: #999; }
+.commit-button { padding: 12px; font-size: 1rem; background: #27ae60; color: #fff; border: none; border-radius: 6px; cursor: pointer; }
+.commit-button:disabled { background: #555; color: #999; }
 
 .score-reveal { background: #0d0d1a; border-radius: 6px; padding: 16px; }
 .score-main { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }

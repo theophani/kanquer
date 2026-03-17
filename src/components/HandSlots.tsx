@@ -33,22 +33,24 @@ export default function HandSlots() {
         ))}
       </div>
       {errorMessage && <p className="error-message">{errorMessage}</p>}
-      <div className="hand-actions">
-        <button
-          className="reset-button"
-          disabled={!canReset || phase === 'committed'}
-          onClick={resetHand}
-        >
-          Reset
-        </button>
-        <button
-          className="commit-button"
-          disabled={!isReady || phase === 'committed'}
-          onClick={commitHand}
-        >
-          Commit Hand
-        </button>
-      </div>
+      {phase !== 'committed' && (
+        <div className="hand-actions">
+          <button
+            className="reset-button"
+            disabled={!canReset}
+            onClick={resetHand}
+          >
+            Reset
+          </button>
+          <button
+            className="commit-button"
+            disabled={!isReady}
+            onClick={commitHand}
+          >
+            Commit Hand
+          </button>
+        </div>
+      )}
     </div>
   )
 }

@@ -129,7 +129,7 @@ export const useGameStore = create<GameState>((set, get) => ({
     )
 
     if (!sol) {
-      set({ errorMessage: 'Not a valid winning hand — check for a complete structure and at least one yaku.' })
+      set({ errorMessage: 'Not a valid winning hand. Check for a complete structure and at least one yaku.' })
       return
     }
 

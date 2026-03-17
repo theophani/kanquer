@@ -9,8 +9,8 @@ export default function GamePage() {
   return (
     <div className="game-page">
       <ContextBar />
-      {phase !== 'committed' && <TileGrid />}
-      {phase !== 'committed' && <HandSlots />}
+      <TileGrid />
+      <HandSlots />
       {phase === 'committed' && <ScoreReveal />}
     </div>
   )
