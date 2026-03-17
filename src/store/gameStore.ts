@@ -1,33 +1,58 @@
 import { create } from 'zustand'
-import type { Puzzle, Tile, Solution } from '../engine/types'
+import type { Puzzle, Solution } from '../engine/types'
 import { tileEquals } from '../engine/tiles'
 import { scoreSelection } from '../engine/scorer'
 
-type Phase = 'idle' | 'playing' | 'committed'
+type Phase = 'playing' | 'committed'
 type Mode = 'daily' | 'practice'
+
+type SavedResult = { elapsed: number; selectedIndices: number[] }
 
 interface GameState {
   puzzle: Puzzle | null
-  selectedTiles: Tile[]
+  selectedIndices: Set<number>
+  lockedIndices: Set<number>
   phase: Phase
   mode: Mode
-  startTime: number | null   // Date.now() when first tile selected
-  elapsed: number            // seconds elapsed (updated on commit)
+  timerStartedAt: number | null
+  accumulatedMs: number
+  elapsed: number
   submittedSolution: Solution | null
   errorMessage: string | null
 
-  loadPuzzle: (puzzle: Puzzle, mode?: Mode) => void
-  toggleTile: (tile: Tile) => void
+  loadPuzzle: (puzzle: Puzzle, mode?: Mode, savedResult?: SavedResult) => void
+  toggleTile: (index: number) => void
   commitHand: () => void
-  getInitialState: () => Omit<GameState, 'loadPuzzle' | 'toggleTile' | 'commitHand' | 'getInitialState'>
+  resetHand: () => void
+  pauseTimer: () => void
+  resumeTimer: () => void
+  getInitialState: () => Omit<GameState,
+    'loadPuzzle' | 'toggleTile' | 'commitHand' | 'resetHand' |
+    'pauseTimer' | 'resumeTimer' | 'getInitialState'>
 }
 
-const INITIAL: Omit<GameState, 'loadPuzzle' | 'toggleTile' | 'commitHand' | 'getInitialState'> = {
+function computeLockedIndices(puzzle: Puzzle): Set<number> {
+  const lockedTiles = puzzle.lockedMelds.flatMap(m => m.tiles)
+  const assigned = new Set<number>()
+  for (const lockedTile of lockedTiles) {
+    for (let i = 0; i < puzzle.tiles.length; i++) {
+      if (!assigned.has(i) && tileEquals(puzzle.tiles[i], lockedTile)) {
+        assigned.add(i)
+        break
+      }
+    }
+  }
+  return assigned
+}
+
+const INITIAL = {
   puzzle: null,
-  selectedTiles: [],
-  phase: 'idle',
-  mode: 'daily',
-  startTime: null,
+  selectedIndices: new Set<number>(),
+  lockedIndices: new Set<number>(),
+  phase: 'playing' as Phase,
+  mode: 'daily' as Mode,
+  timerStartedAt: null as number | null,
+  accumulatedMs: 0,
   elapsed: 0,
   submittedSolution: null,
   errorMessage: null,
@@ -36,42 +61,66 @@ const INITIAL: Omit<GameState, 'loadPuzzle' | 'toggleTile' | 'commitHand' | 'get
 export const useGameStore = create<GameState>((set, get) => ({
   ...INITIAL,
 
-  getInitialState: () => INITIAL,
+  getInitialState: () => ({ ...INITIAL }),
 
-  loadPuzzle: (puzzle, mode = 'daily') => {
-    // Pre-populate locked meld tiles
-    const lockedTiles = puzzle.lockedMelds.flatMap(m => m.tiles)
-    set({ ...INITIAL, puzzle, mode, selectedTiles: lockedTiles, phase: 'idle' })
+  loadPuzzle: (puzzle, mode = 'daily', savedResult) => {
+    const lockedIndices = computeLockedIndices(puzzle)
+
+    if (savedResult) {
+      const selectedIndices = new Set(savedResult.selectedIndices)
+      const tiles = [...selectedIndices].sort((a, b) => a - b).map(i => puzzle.tiles[i])
+      const sol = scoreSelection(
+        tiles, puzzle.lockedMelds, puzzle.doraIndicators,
+        { seatWind: puzzle.seatWind, roundWind: puzzle.roundWind }
+      )
+      set({
+        ...INITIAL,
+        puzzle, mode, lockedIndices, selectedIndices,
+        phase: 'committed',
+        elapsed: savedResult.elapsed,
+        submittedSolution: sol,
+        timerStartedAt: null,
+        accumulatedMs: 0,
+      })
+      return
+    }
+
+    set({
+      ...INITIAL,
+      puzzle, mode, lockedIndices,
+      selectedIndices: new Set(lockedIndices),
+      phase: 'playing',
+      timerStartedAt: Date.now(),
+      accumulatedMs: 0,
+    })
   },
 
-  toggleTile: (tile) => {
-    const { puzzle, selectedTiles, phase, startTime } = get()
+  toggleTile: (index) => {
+    const { puzzle, selectedIndices, lockedIndices, phase } = get()
     if (!puzzle || phase === 'committed') return
+    if (lockedIndices.has(index)) return
 
-    // Check if tile is locked
-    const isLocked = puzzle.lockedMelds.some(m => m.tiles.some(t => tileEquals(t, tile)))
-    if (isLocked) return
-
-    const idx = selectedTiles.findIndex(t => tileEquals(t, tile))
-    const newSelected = idx === -1
-      ? [...selectedTiles, tile]
-      : [...selectedTiles.slice(0, idx), ...selectedTiles.slice(idx + 1)]
-
-    const newPhase = phase === 'idle' ? 'playing' : phase
-    const newStartTime = startTime ?? Date.now()
-
-    set({ selectedTiles: newSelected, phase: newPhase, startTime: newStartTime, errorMessage: null })
+    const next = new Set(selectedIndices)
+    if (next.has(index)) {
+      next.delete(index)
+    } else {
+      next.add(index)
+    }
+    set({ selectedIndices: next, errorMessage: null })
   },
 
   commitHand: () => {
-    const { puzzle, selectedTiles, startTime } = get()
+    const { puzzle, selectedIndices, timerStartedAt, accumulatedMs } = get()
     if (!puzzle) return
 
-    const elapsed = startTime ? Math.floor((Date.now() - startTime) / 1000) : 0
+    const elapsed = Math.floor(
+      (accumulatedMs + (timerStartedAt ? Date.now() - timerStartedAt : 0)) / 1000
+    )
+    get().pauseTimer()
+
+    const tiles = [...selectedIndices].sort((a, b) => a - b).map(i => puzzle.tiles[i])
     const sol = scoreSelection(
-      selectedTiles,
-      puzzle.lockedMelds,
-      puzzle.doraIndicators,
+      tiles, puzzle.lockedMelds, puzzle.doraIndicators,
       { seatWind: puzzle.seatWind, roundWind: puzzle.roundWind }
     )
 
@@ -82,10 +131,30 @@ export const useGameStore = create<GameState>((set, get) => ({
 
     set({ phase: 'committed', elapsed, submittedSolution: sol, errorMessage: null })
 
-    // Save daily result to localStorage
     if (get().mode === 'daily') {
       const key = `kanquer-daily-${new Date().toISOString().slice(0, 10)}`
-      localStorage.setItem(key, JSON.stringify({ points: sol.points, elapsed }))
+      localStorage.setItem(key, JSON.stringify({
+        points: sol.points,
+        elapsed,
+        selectedIndices: [...selectedIndices].sort((a, b) => a - b),
+      }))
     }
+  },
+
+  resetHand: () => {
+    const { lockedIndices } = get()
+    set({ selectedIndices: new Set(lockedIndices), errorMessage: null })
+  },
+
+  pauseTimer: () => {
+    const { timerStartedAt, accumulatedMs } = get()
+    if (timerStartedAt === null) return
+    set({ accumulatedMs: accumulatedMs + (Date.now() - timerStartedAt), timerStartedAt: null })
+  },
+
+  resumeTimer: () => {
+    const { timerStartedAt, phase } = get()
+    if (timerStartedAt !== null || phase === 'committed') return
+    set({ timerStartedAt: Date.now() })
   },
 }))
