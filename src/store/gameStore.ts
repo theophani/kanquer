@@ -61,7 +61,11 @@ const INITIAL = {
 export const useGameStore = create<GameState>((set, get) => ({
   ...INITIAL,
 
-  getInitialState: () => ({ ...INITIAL }),
+  getInitialState: () => ({
+    ...INITIAL,
+    selectedIndices: new Set<number>(),
+    lockedIndices: new Set<number>(),
+  }),
 
   loadPuzzle: (puzzle, mode = 'daily', savedResult) => {
     const lockedIndices = computeLockedIndices(puzzle)
