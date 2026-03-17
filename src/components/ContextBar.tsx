@@ -15,16 +15,34 @@ function windLabel(w: string): string {
 }
 
 export default function ContextBar() {
-  const { puzzle, phase, startTime, elapsed } = useGameStore()
+  const { puzzle, phase, elapsed, pauseTimer, resumeTimer } = useGameStore()
   const [display, setDisplay] = useState(0)
 
+  // Tick the display every second while playing
   useEffect(() => {
-    if (phase !== 'playing' || !startTime) return
+    if (phase === 'committed') return
     const interval = setInterval(() => {
-      setDisplay(Math.floor((Date.now() - startTime) / 1000))
+      const { timerStartedAt, accumulatedMs } = useGameStore.getState()
+      const secs = Math.floor(
+        (accumulatedMs + (timerStartedAt ? Date.now() - timerStartedAt : 0)) / 1000
+      )
+      setDisplay(secs)
     }, 1000)
     return () => clearInterval(interval)
-  }, [phase, startTime])
+  }, [phase])
+
+  // Pause/resume on tab visibility change
+  useEffect(() => {
+    const handleVisibility = () => {
+      if (document.visibilityState === 'hidden') {
+        pauseTimer()
+      } else {
+        resumeTimer()
+      }
+    }
+    document.addEventListener('visibilitychange', handleVisibility)
+    return () => document.removeEventListener('visibilitychange', handleVisibility)
+  }, [pauseTimer, resumeTimer])
 
   if (!puzzle) return null
 
