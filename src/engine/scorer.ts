@@ -15,6 +15,7 @@ export function scoreSelection(
   const decompositions = getAllDecompositions(tiles, lockedMelds, ctx)
   if (decompositions.length === 0) return null
 
+  const dealer = ctx.seatWind === 'E'
   let best: Solution | null = null
   for (const hand of decompositions) {
     const yaku = detectYaku(hand)
@@ -23,7 +24,7 @@ export function scoreSelection(
     const isYakuman = yaku.some(y => y.han === 13)
     const han = isYakuman ? 13 : yaku.reduce((sum, y) => sum + y.han, 0) + doraCount
     const fu = calculateFu(hand)
-    const points = hanFuToPoints(han, fu)
+    const points = hanFuToPoints(han, fu, dealer)
     if (best === null || points > best.points) {
       best = { tiles, hand, yaku, han, fu, points }
     }
@@ -31,15 +32,25 @@ export function scoreSelection(
   return best
 }
 
-// Non-dealer point table (standard values)
-export function hanFuToPoints(han: number, fu: number): number {
-  if (han >= 13) return 32000 // yakuman
-  if (han >= 11) return 24000 // sanbaiman
-  if (han >= 8)  return 16000 // baiman
-  if (han >= 6)  return 12000 // haneman
-  if (han >= 5)  return 8000  // mangan
-  const raw = fu * Math.pow(2, han + 2)
-  if (raw >= 8000) return 8000 // mangan cap
-  // Round up to nearest 100
-  return Math.ceil(raw / 100) * 100
+export function hanFuToPoints(han: number, fu: number, dealer: boolean): number {
+  if (dealer) {
+    if (han >= 13) return 48000
+    if (han >= 11) return 36000
+    if (han >= 8)  return 24000
+    if (han >= 6)  return 18000
+    if (han >= 5)  return 12000
+    const raw = fu * Math.pow(2, han + 2)
+    if (raw >= 8000) return 12000
+    const ndPts = Math.ceil(raw / 100) * 100
+    return Math.ceil(ndPts * 1.5 / 100) * 100
+  } else {
+    if (han >= 13) return 32000
+    if (han >= 11) return 24000
+    if (han >= 8)  return 16000
+    if (han >= 6)  return 12000
+    if (han >= 5)  return 8000
+    const raw = fu * Math.pow(2, han + 2)
+    if (raw >= 8000) return 8000
+    return Math.ceil(raw / 100) * 100
+  }
 }

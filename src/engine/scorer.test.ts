@@ -39,7 +39,17 @@ describe('scoreSelection', () => {
 
   it('yakuman returns 32000 points', () => {
     const kokushiTiles = [m(1),m(9),p(1),p(9),s(1),s(9),E,wind('S'),wind('W'),wind('N'),dragon('W'),dragon('G'),dragon('R'),m(1)]
-    const sol = scoreSelection(kokushiTiles, [], [], { seatWind: 'E', roundWind: 'E' })!
+    const sol = scoreSelection(kokushiTiles, [], [], { seatWind: 'S', roundWind: 'E' })!
     expect(sol.points).toBe(32000)
+  })
+
+  it('scores higher when seat wind is East (dealer)', () => {
+    const tiles = [m(2),m(3),m(4), p(5),p(6),p(7), s(3),s(4),s(5), m(6),m(7),m(8), p(2),p(2)]
+    const ctxDealer = { seatWind: 'E' as const, roundWind: 'E' as const }
+    const ctxNonDealer = { seatWind: 'S' as const, roundWind: 'E' as const }
+    // dora indicator m(1) → dora is m(2), hand has m(2) → +1 dora han
+    const dealer = scoreSelection(tiles, [], [m(1)], ctxDealer)!
+    const nonDealer = scoreSelection(tiles, [], [m(1)], ctxNonDealer)!
+    expect(dealer.points).toBeGreaterThan(nonDealer.points)
   })
 })
