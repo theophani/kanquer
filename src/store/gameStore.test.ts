@@ -98,4 +98,30 @@ describe('gameStore', () => {
     expect(state.selectedIndices.size).toBe(lockedIndices.size)
     expect(state.errorMessage).toBeNull()
   })
+
+  it('cannot select more than 14 tiles', () => {
+    const puzzle = generatePuzzle(1)
+    useGameStore.getState().loadPuzzle(puzzle)
+    const { lockedIndices } = useGameStore.getState()
+
+    // Select free tiles until we have 14 total selected
+    let count = useGameStore.getState().selectedIndices.size
+    for (let i = 0; i < puzzle.tiles.length && count < 14; i++) {
+      if (!lockedIndices.has(i)) {
+        useGameStore.getState().toggleTile(i)
+        count = useGameStore.getState().selectedIndices.size
+      }
+    }
+
+    expect(useGameStore.getState().selectedIndices.size).toBe(14)
+
+    // Try to select one more free tile
+    const fifteenth = puzzle.tiles.findIndex(
+      (_, i) => !useGameStore.getState().selectedIndices.has(i) && !lockedIndices.has(i)
+    )
+    if (fifteenth !== -1) {
+      useGameStore.getState().toggleTile(fifteenth)
+      expect(useGameStore.getState().selectedIndices.size).toBe(14)
+    }
+  })
 })

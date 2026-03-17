@@ -103,6 +103,7 @@ export const useGameStore = create<GameState>((set, get) => ({
     const { puzzle, selectedIndices, lockedIndices, phase } = get()
     if (!puzzle || phase === 'committed') return
     if (lockedIndices.has(index)) return
+    if (!selectedIndices.has(index) && selectedIndices.size >= 14) return
 
     const next = new Set(selectedIndices)
     if (next.has(index)) {
