@@ -69,6 +69,7 @@ describe('scoreSelection', () => {
     const tiles = [m(3),m(3),m(3), p(3),p(3),p(3), s(3),s(3),s(3), m(5),m(6),m(7), m(9),m(9)]
     const sol = scoreSelection(tiles, [], [], ctx)!
     expect(sol.yaku.map(y => y.name)).toContain('Sanshoku Doukou')
+    expect(sol.yaku.map(y => y.name)).toContain('Sanankou')
     expect(sol.han).toBe(4)
   })
 })
