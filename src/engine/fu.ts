@@ -96,12 +96,15 @@ function describePairLabel(pair: Meld, seatWind: string, roundWind: string): str
     const isRound = tile.value === roundWind
     if (isSeat && isRound) return `Pair — ${name} (seat & round)`
     if (isSeat) return `Pair — ${name} (seat)`
-    return `Pair — ${name} (round)`
+    if (isRound) return `Pair — ${name} (round)`
+    // unreachable: describePairLabel is only called when pairFu > 0, which requires a valued wind
+    throw new Error(`describePairLabel called for non-valued wind pair: ${name}`)
   }
   return `Pair — ${name}`
 }
 
 function describeMeldLabel(meld: Meld): string {
+  if (meld.type !== 'triplet') throw new Error(`describeMeldLabel called for non-triplet meld: ${meld.type}`)
   const tile = meld.tiles[0]
   const tileName = describeTile(tile)
   const openStr = meld.open ? 'open' : 'closed'
