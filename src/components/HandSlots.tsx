@@ -11,8 +11,9 @@ export default function HandSlots() {
     .map(i => ({ index: i, tile: puzzle.tiles[i] }))
   const emptySlots = 14 - selectedIndices.length
 
+  const lockedCount = lockedIndices.size
   const isReady = selectedIndices.length === 14
-  const canReset = selectedIndices.length > lockedIndices.size
+  const canReset = selectedIndices.length > lockedCount
 
   return (
     <div className="hand-area">
@@ -26,6 +27,7 @@ export default function HandSlots() {
           <button
             key={`free-${index}`}
             className={`tile ${tile.suit} selected`}
+            aria-label={`Deselect ${tileDisplay(tile)}`}
             onClick={() => toggleTile(index)}
             disabled={phase === 'committed'}
           >
