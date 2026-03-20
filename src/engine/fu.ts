@@ -55,6 +55,7 @@ export function getFuBreakdown(hand: Hand): FuComponent[] {
   if (hand.structure === 'chiitoitsu') return [{ label: 'Chiitoitsu', fu: 25 }]
   if (hand.structure === 'kokushi') return []
 
+  // Engine models ron wins only; tsumo base (20 fu) and tsumo bonus (+2 fu) are not represented.
   const isOpen = hand.melds.some(m => m.open)
   const components: FuComponent[] = [
     { label: isOpen ? 'Base (open hand)' : 'Base (closed ron)', fu: isOpen ? 20 : 30 },
