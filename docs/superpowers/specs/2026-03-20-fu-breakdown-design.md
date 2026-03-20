@@ -22,7 +22,7 @@ export type FuComponent = { label: string; fu: number }
 - If `hand.structure === 'chiitoitsu'`: return `[{ label: 'Chiitoitsu', fu: 25 }]`
 - If `hand.structure === 'kokushi'`: return `[]` (fu is 0, no breakdown to show)
 - For `'standard'` (narrow type with `hand.structure === 'standard'` before accessing `hand.melds`):
-  1. Start with `{ label: 'Base', fu: 30 }` (engine always assumes closed ron; open-hand base of 20 fu is out of scope)
+  1. Check `const isOpen = hand.melds.some(m => m.open)`. Start with `{ label: isOpen ? 'Base (open hand)' : 'Base (closed ron)', fu: isOpen ? 20 : 30 }`
   2. Find the pair meld with a non-null assertion (`hand.melds.find(m => m.type === 'pair')!`) — a valid standard hand always has exactly one pair, matching the assumption in `baseFu`
   3. Call `pairFu`; if > 0 push `{ label: describePairLabel(pair, hand.seatWind, hand.roundWind), fu: pairFuVal }`
   4. For each non-pair meld, call `meldFu`; if > 0 push `{ label: describeMeldLabel(meld), fu: meldFuVal }`. Sequences always return 0 from `meldFu` so they are excluded by the `> 0` guard — no separate type pre-filter needed. Kans are not in the current engine (`MeldType` has no `'kan'`); this exclusion is intentional.
@@ -61,7 +61,7 @@ function describeTile(tile: Tile): string {
   - Open simple: `"Triplet — 4m (open)"`
   - Open terminal/honor: `"Triplet — 9p (open, terminal)"`, `"Triplet — East wind (open, terminal)"`
 
-**No changes to `calculateFu`.** `getFuBreakdown` uses the same internal helpers (`pairFu`, `meldFu`) but returns labeled components instead of a sum.
+**Also fix `baseFu`** to use 20 fu for open hands: change `let fu = 30` to `const isOpen = hand.melds.some(m => m.open); let fu = isOpen ? 20 : 30`. This fixes a scoring bug where hands with locked (open) melds were incorrectly scored with 30 base fu.
 
 ---
 
@@ -106,3 +106,5 @@ Use array index as `key` (labels are unique in practice but index is safer).
 - Kan fu (not in current engine)
 - Tsumo fu (not in current engine)
 - CSS styling beyond structural class names
+- Tsumo fu (2 fu for self-draw win) — not modelled in the engine
+- Kan fu — not in the current engine (`MeldType` has no `'kan'`)
