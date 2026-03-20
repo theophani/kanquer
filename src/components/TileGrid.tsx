@@ -13,7 +13,7 @@ export default function TileGrid() {
           className={[
             'tile',
             tile.suit,
-            selectedIndices.has(i) ? 'selected' : '',
+            selectedIndices.includes(i) ? 'selected' : '',
             lockedIndices.has(i) ? 'locked' : '',
           ].join(' ')}
           onClick={() => phase !== 'committed' && toggleTile(i)}
