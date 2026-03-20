@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useGameStore } from '../store/gameStore'
 import ShareButton from './ShareButton'
+import { getFuBreakdown } from '../engine/fu'
 
 export default function ScoreReveal() {
   const { submittedSolution, puzzle, elapsed } = useGameStore()
@@ -11,6 +12,8 @@ export default function ScoreReveal() {
   const isOptimal = submittedSolution.points >= optimal.points
   const mm = String(Math.floor(elapsed / 60)).padStart(2, '0')
   const ss = String(elapsed % 60).padStart(2, '0')
+  const fuComponents = getFuBreakdown(submittedSolution.hand)
+  const rawFu = fuComponents.reduce((sum, c) => sum + c.fu, 0)
 
   return (
     <div className="score-reveal">
@@ -35,7 +38,21 @@ export default function ScoreReveal() {
               <span>{y.han} han</span>
             </div>
           ))}
-          {/* TO DO: Show fu breakdown too */}
+          {fuComponents.length > 0 && (
+            <div className="fu-breakdown">
+              {fuComponents.map((c, i) => (
+                <div key={i} className="fu-row">
+                  <span>{c.label}</span>
+                  <span>{c.fu} fu</span>
+                </div>
+              ))}
+              <div className="fu-total">
+                {rawFu !== submittedSolution.fu
+                  ? `${rawFu} → ${submittedSolution.fu} fu`
+                  : `${submittedSolution.fu} fu`}
+              </div>
+            </div>
+          )}
           <div className="yaku-total">
             Total: {submittedSolution.han} han {submittedSolution.fu} fu → {submittedSolution.points.toLocaleString()} pts
           </div>
