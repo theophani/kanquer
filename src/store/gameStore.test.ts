@@ -19,9 +19,9 @@ describe('gameStore', () => {
     const state = useGameStore.getState()
     expect(state.puzzle).toBe(puzzle)
     const lockedCount = puzzle.lockedMelds.reduce((sum, m) => sum + m.tiles.length, 0)
-    expect(state.selectedIndices.size).toBe(lockedCount)
+    expect(state.selectedIndices.length).toBe(lockedCount)
     state.lockedIndices.forEach(i => {
-      expect(state.selectedIndices.has(i)).toBe(true)
+      expect(state.selectedIndices.includes(i)).toBe(true)
     })
   })
 
@@ -31,7 +31,7 @@ describe('gameStore', () => {
     const { lockedIndices } = useGameStore.getState()
     const freeIdx = puzzle.tiles.findIndex((_, i) => !lockedIndices.has(i))
     useGameStore.getState().toggleTile(freeIdx)
-    expect(useGameStore.getState().selectedIndices.has(freeIdx)).toBe(true)
+    expect(useGameStore.getState().selectedIndices.includes(freeIdx)).toBe(true)
   })
 
   it('toggling a tile twice deselects it', () => {
@@ -41,7 +41,7 @@ describe('gameStore', () => {
     const freeIdx = puzzle.tiles.findIndex((_, i) => !lockedIndices.has(i))
     useGameStore.getState().toggleTile(freeIdx)
     useGameStore.getState().toggleTile(freeIdx)
-    expect(useGameStore.getState().selectedIndices.has(freeIdx)).toBe(false)
+    expect(useGameStore.getState().selectedIndices.includes(freeIdx)).toBe(false)
   })
 
   it('locked tile indices cannot be toggled off', () => {
@@ -51,7 +51,7 @@ describe('gameStore', () => {
     if (lockedIndices.size > 0) {
       const lockedIdx = [...lockedIndices][0]
       useGameStore.getState().toggleTile(lockedIdx)
-      expect(useGameStore.getState().selectedIndices.has(lockedIdx)).toBe(true)
+      expect(useGameStore.getState().selectedIndices.includes(lockedIdx)).toBe(true)
     }
   })
 
@@ -60,11 +60,11 @@ describe('gameStore', () => {
     useGameStore.getState().loadPuzzle(puzzle)
     // Build selectedIndices from the best known solution
     const bestTiles = puzzle.solutions[0].tiles
-    const indices = new Set<number>()
+    const indices: number[] = []
     const used = new Set<number>()
     for (const tile of bestTiles) {
       const idx = puzzle.tiles.findIndex((t, i) => !used.has(i) && t.suit === tile.suit && t.value === tile.value)
-      if (idx !== -1) { indices.add(idx); used.add(idx) }
+      if (idx !== -1) { indices.push(idx); used.add(idx) }
     }
     useGameStore.setState({ selectedIndices: indices, phase: 'playing' })
     useGameStore.getState().commitHand()
@@ -76,7 +76,7 @@ describe('gameStore', () => {
     const puzzle = generatePuzzle(1)
     useGameStore.getState().loadPuzzle(puzzle)
     useGameStore.setState({
-      selectedIndices: new Set([0,1,2,3,4,5,6,7,8,9,10,11,12,13]),
+      selectedIndices: [0,1,2,3,4,5,6,7,8,9,10,11,12,13],
       phase: 'playing'
     })
     useGameStore.getState().commitHand()
@@ -95,7 +95,7 @@ describe('gameStore', () => {
     useGameStore.setState({ errorMessage: 'some error' })
     useGameStore.getState().resetHand()
     const state = useGameStore.getState()
-    expect(state.selectedIndices.size).toBe(lockedIndices.size)
+    expect(state.selectedIndices.length).toBe(lockedIndices.size)
     expect(state.errorMessage).toBeNull()
   })
 
@@ -105,22 +105,22 @@ describe('gameStore', () => {
     const { lockedIndices } = useGameStore.getState()
 
     // Select free tiles until we have 14 total selected
-    let count = useGameStore.getState().selectedIndices.size
+    let count = useGameStore.getState().selectedIndices.length
     for (let i = 0; i < puzzle.tiles.length && count < 14; i++) {
       if (!lockedIndices.has(i)) {
         useGameStore.getState().toggleTile(i)
-        count = useGameStore.getState().selectedIndices.size
+        count = useGameStore.getState().selectedIndices.length
       }
     }
 
-    expect(useGameStore.getState().selectedIndices.size).toBe(14)
+    expect(useGameStore.getState().selectedIndices.length).toBe(14)
 
     // Try to select one more free tile
     const fifteenth = puzzle.tiles.findIndex(
-      (_, i) => !useGameStore.getState().selectedIndices.has(i) && !lockedIndices.has(i)
+      (_, i) => !useGameStore.getState().selectedIndices.includes(i) && !lockedIndices.has(i)
     )
     expect(fifteenth).not.toBe(-1)
     useGameStore.getState().toggleTile(fifteenth)
-    expect(useGameStore.getState().selectedIndices.size).toBe(14)
+    expect(useGameStore.getState().selectedIndices.length).toBe(14)
   })
 })

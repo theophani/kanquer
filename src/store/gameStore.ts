@@ -10,7 +10,7 @@ type SavedResult = { elapsed: number; selectedIndices: number[] }
 
 interface GameState {
   puzzle: Puzzle | null
-  selectedIndices: Set<number>
+  selectedIndices: number[]
   lockedIndices: Set<number>
   phase: Phase
   mode: Mode
@@ -47,7 +47,7 @@ function computeLockedIndices(puzzle: Puzzle): Set<number> {
 
 const INITIAL = {
   puzzle: null,
-  selectedIndices: new Set<number>(),
+  selectedIndices: [] as number[],
   lockedIndices: new Set<number>(),
   phase: 'playing' as Phase,
   mode: 'daily' as Mode,
@@ -63,7 +63,7 @@ export const useGameStore = create<GameState>((set, get) => ({
 
   getInitialState: () => ({
     ...INITIAL,
-    selectedIndices: new Set<number>(),
+    selectedIndices: [] as number[],
     lockedIndices: new Set<number>(),
   }),
 
@@ -71,7 +71,7 @@ export const useGameStore = create<GameState>((set, get) => ({
     const lockedIndices = computeLockedIndices(puzzle)
 
     if (savedResult) {
-      const selectedIndices = new Set(savedResult.selectedIndices)
+      const selectedIndices = [...savedResult.selectedIndices]
       const tiles = [...selectedIndices].sort((a, b) => a - b).map(i => puzzle.tiles[i])
       const sol = scoreSelection(
         tiles, puzzle.lockedMelds, puzzle.doraIndicators,
@@ -92,7 +92,7 @@ export const useGameStore = create<GameState>((set, get) => ({
     set({
       ...INITIAL,
       puzzle, mode, lockedIndices,
-      selectedIndices: new Set(lockedIndices),
+      selectedIndices: [...lockedIndices],
       phase: 'playing',
       timerStartedAt: Date.now(),
       accumulatedMs: 0,
@@ -103,14 +103,11 @@ export const useGameStore = create<GameState>((set, get) => ({
     const { puzzle, selectedIndices, lockedIndices, phase } = get()
     if (!puzzle || phase === 'committed') return
     if (lockedIndices.has(index)) return
-    if (!selectedIndices.has(index) && selectedIndices.size >= 14) return
+    if (!selectedIndices.includes(index) && selectedIndices.length >= 14) return
 
-    const next = new Set(selectedIndices)
-    if (next.has(index)) {
-      next.delete(index)
-    } else {
-      next.add(index)
-    }
+    const next = selectedIndices.includes(index)
+      ? selectedIndices.filter(i => i !== index)
+      : [...selectedIndices, index]
     set({ selectedIndices: next, errorMessage: null })
   },
 
@@ -148,7 +145,7 @@ export const useGameStore = create<GameState>((set, get) => ({
 
   resetHand: () => {
     const { lockedIndices } = get()
-    set({ selectedIndices: new Set(lockedIndices), errorMessage: null })
+    set({ selectedIndices: [...lockedIndices], errorMessage: null })
   },
 
   pauseTimer: () => {
