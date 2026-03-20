@@ -2,18 +2,17 @@ import { useGameStore } from '../store/gameStore'
 import { tileDisplay } from './tileDisplay'
 
 export default function HandSlots() {
-  const { puzzle, selectedIndices, lockedIndices, phase, commitHand, resetHand, errorMessage } = useGameStore()
+  const { puzzle, selectedIndices, lockedIndices, phase, commitHand, resetHand, errorMessage, toggleTile } = useGameStore()
   if (!puzzle) return null
 
   const lockedTiles = [...lockedIndices].sort((a, b) => a - b).map(i => puzzle.tiles[i])
-  const freeTiles = [...selectedIndices]
+  const freeTileEntries = [...selectedIndices]
     .filter(i => !lockedIndices.has(i))
-    .sort((a, b) => a - b)
-    .map(i => puzzle.tiles[i])
-  const emptySlots = 14 - selectedIndices.size
+    .map(i => ({ index: i, tile: puzzle.tiles[i] }))
+  const emptySlots = 14 - selectedIndices.length
 
-  const isReady = selectedIndices.size === 14
-  const canReset = selectedIndices.size > lockedIndices.size
+  const isReady = selectedIndices.length === 14
+  const canReset = selectedIndices.length > lockedIndices.size
 
   return (
     <div className="hand-area">
@@ -23,12 +22,15 @@ export default function HandSlots() {
             {tileDisplay(tile)}
           </span>
         ))}
-        {/* TO DO: The tiles should be in the order they were selected */}
-        {/* TO DO: The tiles should unselectable by clicking */}
-        {freeTiles.map((tile, i) => (
-          <span key={`free-${i}`} className={`tile ${tile.suit} selected`}>
+        {freeTileEntries.map(({ index, tile }) => (
+          <button
+            key={`free-${index}`}
+            className={`tile ${tile.suit} selected`}
+            onClick={() => toggleTile(index)}
+            disabled={phase === 'committed'}
+          >
             {tileDisplay(tile)}
-          </span>
+          </button>
         ))}
         {Array.from({ length: emptySlots }).map((_, i) => (
           <span key={`empty-${i}`} className="tile empty">·</span>
