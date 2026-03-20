@@ -19,7 +19,7 @@ export default function HandSlots() {
     <div className="hand-area">
       <div className="hand-slots">
         {lockedTiles.map((tile, i) => (
-          <span key={`locked-${i}`} className="tile locked">
+          <span key={`locked-${i}`} className={`tile ${tile.suit} locked`}>
             {tileDisplay(tile)}
           </span>
         ))}
