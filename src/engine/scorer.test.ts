@@ -72,4 +72,6 @@ describe('scoreSelection', () => {
     expect(sol.yaku.map(y => y.name)).toContain('Sanankou')
     expect(sol.han).toBe(4)
   })
+
+  // TO DO: https://theophani.github.io/kanquer/?seed=8f9b1cbd does not know the true optimal solution and instead returns a suboptimal solution. This is a known issue with the current scoring implementation that only knows the solutions it created, and not actually all possible solutions.
 })

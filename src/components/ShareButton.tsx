@@ -14,19 +14,19 @@ export default function ShareButton() {
 
   function buildShareText(): string {
     const lines: string[] = []
-    const params = new URLSearchParams(window.location.hash.slice(1))
+    const params = new URLSearchParams(window.location.search)
     const base = window.location.origin + window.location.pathname
     if (mode === 'daily') {
       // Use the puzzle number from the URL param (not today's date) so past daily links work correctly
       const n = params.get('p') ?? String(puzzleNumberFromDate(new Date()))
       lines.push(`Kanquer #${n}${isOptimal ? ' ⭐' : ''}`)
       lines.push(`${submittedSolution!.points.toLocaleString()} pts · ${mm}:${ss}`)
-      lines.push(`${base}#p=${n}`)
+      lines.push(`${base}?p=${n}`)
     } else {
       const seedHex = params.get('seed') ?? 'practice'
       lines.push(`Kanquer Practice${isOptimal ? ' ⭐' : ''}`)
       lines.push(`${submittedSolution!.points.toLocaleString()} pts · ${mm}:${ss}`)
-      lines.push(`${base}#seed=${seedHex}`)
+      lines.push(`${base}?seed=${seedHex}`)
     }
     return lines.join('\n')
   }
