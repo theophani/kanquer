@@ -12,7 +12,7 @@ body { margin: 0; font-family: system-ui, sans-serif; background: #1a1a2e; color
 
 .game-page { max-width: 650px; margin: 0 auto; padding: 16px; }
 
-.game-header { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+.game-header { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; padding: 0 2px; }
 .game-header-home { font-weight: bold; color: #eee; text-decoration: none; flex: 1; }
 .game-header-home:hover { color: #f39c12; }
 .game-header-nav { display: flex; gap: 8px; }
