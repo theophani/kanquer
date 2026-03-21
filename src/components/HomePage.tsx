@@ -9,12 +9,12 @@ export default function HomePage() {
     <div className="home-page">
       <h1>Kanquer</h1>
       <p>Find the highest-scoring winning hand from 24 tiles.</p>
-      <a href="/daily" className="daily-button">
+      <a href="#daily" className="daily-button">
         {dailyResult
           ? `Today's Puzzle — ${dailyResult.points.toLocaleString()} pts`
           : "Today's Puzzle"}
       </a>
-      <a href="/random" className="practice-button">
+      <a href="#random" className="practice-button">
         Practice
       </a>
     </div>
