@@ -1,3 +1,4 @@
+import GameHeader from './GameHeader'
 import ContextBar from './ContextBar'
 import TileGrid from './TileGrid'
 import HandSlots from './HandSlots'
@@ -8,7 +9,7 @@ export default function GamePage() {
   const { phase } = useGameStore()
   return (
     <div className="game-page">
-      {/* TO DO: Add link back to home page, daily, random */}
+      <GameHeader />
       <ContextBar />
       <TileGrid />
       <HandSlots />

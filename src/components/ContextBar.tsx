@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useGameStore } from '../store/gameStore'
 import { tileDisplay } from './tileDisplay'
+import { dateFromPuzzleNumber } from '../engine/seed'
 
 function windLabel(w: string): string {
   return { E: 'East', S: 'South', W: 'West', N: 'North' }[w] ?? w
@@ -47,19 +48,33 @@ export default function ContextBar() {
   const mm = String(Math.floor(seconds / 60)).padStart(2, '0')
   const ss = String(seconds % 60).padStart(2, '0')
 
+  const { mode } = useGameStore.getState()
+  const params = new URLSearchParams(window.location.search)
+  let puzzleLabel: string
+  if (mode === 'daily') {
+    const n = parseInt(params.get('p') ?? '0', 10)
+    const date = dateFromPuzzleNumber(n)
+    const dateStr = date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', timeZone: 'UTC' })
+    puzzleLabel = `Puzzle #${n} · ${dateStr}`
+  } else {
+    puzzleLabel = `Puzzle ${params.get('seed') ?? ''}`
+  }
+
   return (
-    <div className="context-bar">
-      <span>Round: {windLabel(puzzle.roundWind)}</span>
-      <span>Seat: {windLabel(puzzle.seatWind)}</span>
-      <span>
-        Dora Indicator{puzzle.doraIndicators.length > 1 ? 's' : ''}:
-      </span>
-      {puzzle.doraIndicators.map((t, i) => (
-        <span key={i} className={`tile ${t.suit}`}>{tileDisplay(t)}</span>
-      ))}
-      {/* TO DO: Show the puzzle number or HEX */}
-      {/* TO DO: The timer should save between sessions */}
-      <span className="timer">{mm}:{ss}</span>
-    </div>
+    <>
+      <span className="puzzle-label">{puzzleLabel}</span>
+      <div className="context-bar">
+        <span>Round: {windLabel(puzzle.roundWind)}</span>
+        <span>Seat: {windLabel(puzzle.seatWind)}</span>
+        <span>
+          Dora Indicator{puzzle.doraIndicators.length > 1 ? 's' : ''}:
+        </span>
+        {puzzle.doraIndicators.map((t, i) => (
+          <span key={i} className={`tile ${t.suit}`}>{tileDisplay(t)}</span>
+        ))}
+        {/* TO DO: The timer should save between sessions */}
+        <span className="timer">{mm}:{ss}</span>
+      </div>
+    </>
   )
 }
