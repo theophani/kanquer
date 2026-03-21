@@ -189,7 +189,7 @@ describe('getFuBreakdown', () => {
     }
     expect(getFuBreakdown(hand)).toEqual([
       { label: 'Base (closed ron)', fu: 30 },
-      { label: 'Triplet — 1m (closed, terminal)', fu: 8 },
+      { label: 'Triplet — 1m (closed, terminal/honour)', fu: 8 },
     ])
   })
 

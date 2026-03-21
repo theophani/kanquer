@@ -26,7 +26,7 @@ export function scoreSelection(
     const fu = calculateFu(hand)
     const points = hanFuToPoints(han, fu, dealer)
     if (best === null || points > best.points) {
-      best = { tiles, hand, yaku, han, fu, points }
+      best = { tiles, hand, yaku, doraCount, han, fu, points }
     }
   }
   return best

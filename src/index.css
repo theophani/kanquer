@@ -45,6 +45,10 @@ button.tile { cursor: pointer; }
 .yaku-breakdown { background: #111; border-radius: 4px; padding: 12px; margin-bottom: 12px; }
 .yaku-row { display: flex; justify-content: space-between; padding: 4px 0; }
 .yaku-total { border-top: 1px solid #333; margin-top: 8px; padding-top: 8px; color: #fff; font-weight: bold; }
+.dora-row { display: flex; justify-content: space-between; padding: 4px 0; }
+.fu-breakdown { padding-top: 8px;  }
+.fu-row { display: flex; justify-content: space-between; padding: 4px 0; font-style: italic; color: rgb(179, 179, 179); }
+.fu-total { padding: 4px 0; color: #fff; text-align: right; }
 .optimal-hint { color: #3498db; font-size: 0.9rem; padding: 8px; background: #0a1a2a; border-radius: 4px; margin-bottom: 12px; }
 .result-footer { display: flex; justify-content: space-between; align-items: center; }
 .elapsed { color: #aaa; font-size: 0.9rem; }

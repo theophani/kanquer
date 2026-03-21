@@ -52,7 +52,7 @@ export default function ContextBar() {
       <span>Round: {windLabel(puzzle.roundWind)}</span>
       <span>Seat: {windLabel(puzzle.seatWind)}</span>
       <span>
-        Dora:
+        Dora Indicator{puzzle.doraIndicators.length > 1 ? 's' : ''}:
       </span>
       {puzzle.doraIndicators.map((t, i) => (
         <span key={i} className={`tile ${t.suit}`}>{tileDisplay(t)}</span>

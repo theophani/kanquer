@@ -28,6 +28,7 @@ export type Solution = {
   tiles: Tile[]
   hand: Hand
   yaku: YakuResult[]
+  doraCount: number
   han: number
   fu: number
   points: number

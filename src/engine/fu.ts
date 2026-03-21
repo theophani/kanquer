@@ -109,6 +109,6 @@ function describeMeldLabel(meld: Meld): string {
   const tile = meld.tiles[0]
   const tileName = describeTile(tile)
   const openStr = meld.open ? 'open' : 'closed'
-  const terminal = isTerminalOrHonor(tile) ? ', terminal' : ''
+  const terminal = isTerminalOrHonor(tile) ? ', terminal/honour' : ''
   return `Triplet — ${tileName} (${openStr}${terminal})`
 }

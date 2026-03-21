@@ -38,6 +38,12 @@ export default function ScoreReveal() {
               <span>{y.han} han</span>
             </div>
           ))}
+          {submittedSolution.doraCount > 0 && (
+            <div className="dora-row">
+              <span>Dora</span>
+              <span>{submittedSolution.doraCount} han</span>
+            </div>
+          )}
           {fuComponents.length > 0 && (
             <div className="fu-breakdown">
               {fuComponents.map((c, i) => (
