@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useGameStore } from './store/gameStore'
 import { generatePuzzle } from './engine/generator'
 import { seedFromPuzzleNumber, seedFromHex, puzzleNumberFromDate, dateFromPuzzleNumber } from './engine/seed'
@@ -7,6 +7,7 @@ import GamePage from './components/GamePage'
 
 export default function App() {
   const { puzzle, loadPuzzle } = useGameStore()
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     function loadDaily(n: number) {
@@ -46,6 +47,7 @@ export default function App() {
       const n = parseInt(pParam, 10)
       if (isNaN(n)) {
         window.history.replaceState({}, '', '.')
+        setLoading(false)
         return
       }
       loadDaily(n)
@@ -54,10 +56,10 @@ export default function App() {
       loadPuzzle(generatePuzzle(seedFromHex(seedParam)), 'practice')
     }
     // No params → show home screen
+    setLoading(false)
   }, [])
 
-  // TO DO: Why is there a flash of the home page on load? Can we prevent that?
-
+  if (loading) return null
   if (!puzzle) return <HomePage />
   return <GamePage />
 }
