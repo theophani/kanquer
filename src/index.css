@@ -43,10 +43,6 @@ button.tile { cursor: pointer; }
 .tile.empty { border: 2px solid #333; background: #111; color: #555; cursor: default; }
 .tile:disabled { cursor: default; opacity: 0.7; }
 
-@media (max-width: 480px) {
-  .tile-grid { gap: 15px; }
-}
-
 .hand-slots { display: flex; flex-wrap: wrap; gap: 10px; min-height: 64px; margin-bottom: 12px; }
 .error-message { color: #e74c3c; font-size: 0.9rem; margin: 8px 0; }
 .hand-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 24px; }
@@ -54,6 +50,11 @@ button.tile { cursor: pointer; }
 .action-button:disabled { background: #555; color: #999; } /* higher specificity overrides .reset-button/.commit-button backgrounds */
 .reset-button { background: #2980b9; }
 .commit-button { background: #27ae60; }
+
+@media (max-width: 480px) {
+  .tile-grid { gap: 15px; }
+  .hand-slots { gap: 15px; }
+}
 
 .score-reveal { padding: 16px; } /* co-applied with .panel — overrides its padding: 12px */
 .score-main { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
