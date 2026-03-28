@@ -43,14 +43,14 @@ export default function HandSlots() {
       {phase !== 'committed' && (
         <div className="hand-actions">
           <button
-            className="reset-button"
+            className="action-button reset-button"
             disabled={!canReset}
             onClick={resetHand}
           >
             Reset
           </button>
           <button
-            className="commit-button"
+            className="action-button commit-button"
             disabled={!isReady}
             onClick={commitHand}
           >

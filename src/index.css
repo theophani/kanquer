@@ -51,10 +51,10 @@ button.tile { cursor: pointer; }
 .hand-slots { display: flex; flex-wrap: wrap; gap: 10px; min-height: 64px; margin-bottom: 12px; }
 .error-message { color: #e74c3c; font-size: 0.9rem; margin: 8px 0; }
 .hand-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 24px; }
-.reset-button { padding: 12px; font-size: 1rem; background: #2980b9; color: #fff; border: none; border-radius: 6px; cursor: pointer; }
-.reset-button:disabled { background: #555; color: #999; }
-.commit-button { padding: 12px; font-size: 1rem; background: #27ae60; color: #fff; border: none; border-radius: 6px; cursor: pointer; }
-.commit-button:disabled { background: #555; color: #999; }
+.action-button { padding: 12px; font-size: 1rem; color: #fff; border: none; border-radius: 6px; cursor: pointer; }
+.action-button:disabled { background: #555; color: #999; }
+.reset-button { background: #2980b9; }
+.commit-button { background: #27ae60; }
 
 .score-reveal { background: #0d0d1a; border-radius: 6px; padding: 16px; }
 .score-main { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
