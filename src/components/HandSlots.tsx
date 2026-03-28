@@ -1,5 +1,6 @@
 import { useGameStore } from '../store/gameStore'
 import { tileDisplay } from './tileDisplay'
+import { tileImage } from './tileImage'
 
 export default function HandSlots() {
   const { puzzle, selectedIndices, lockedIndices, phase, commitHand, resetHand, errorMessage, toggleTile } = useGameStore()
@@ -19,19 +20,19 @@ export default function HandSlots() {
     <div className="hand-area">
       <div className="hand-slots">
         {lockedTiles.map((tile, i) => (
-          <span key={`locked-${i}`} className={`tile ${tile.suit} locked`}>
-            {tileDisplay(tile)}
+          <span key={`locked-${i}`} className="tile locked">
+            <img src={tileImage(tile)} alt={tileDisplay(tile)} />
           </span>
         ))}
         {freeTileEntries.map(({ index, tile }) => (
           <button
             key={`free-${index}`}
-            className={`tile ${tile.suit} selected`}
+            className="tile selected"
             aria-label={`Deselect ${tileDisplay(tile)}`}
             onClick={() => toggleTile(index)}
             disabled={phase === 'committed'}
           >
-            {tileDisplay(tile)}
+            <img src={tileImage(tile)} alt={tileDisplay(tile)} />
           </button>
         ))}
         {Array.from({ length: emptySlots }).map((_, i) => (
