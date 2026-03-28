@@ -33,13 +33,13 @@ export default function ScoreReveal() {
       {expanded && (
         <div className="yaku-breakdown">
           {submittedSolution.yaku.map(y => (
-            <div key={y.name} className="yaku-row">
+            <div key={y.name} className="score-row">
               <span>{y.name}</span>
               <span>{y.han} han</span>
             </div>
           ))}
           {submittedSolution.doraCount > 0 && (
-            <div className="dora-row">
+            <div className="score-row">
               <span>Dora</span>
               <span>{submittedSolution.doraCount} han</span>
             </div>

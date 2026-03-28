@@ -64,9 +64,8 @@ button.tile { cursor: pointer; }
 .score-compact { font-size: 0.9rem; color: #aaa; margin-bottom: 12px; }
 .details-toggle { background: none; border: 1px solid #555; color: #aaa; padding: 2px 8px; border-radius: 4px; cursor: pointer; margin-left: 8px; font-size: 0.8rem; }
 .yaku-breakdown { background: #111; border-radius: 4px; padding: 12px; margin-bottom: 12px; }
-.yaku-row { display: flex; justify-content: space-between; padding: 4px 0; }
+.score-row { display: flex; justify-content: space-between; padding: 4px 0; }
 .yaku-total { border-top: 1px solid #333; margin-top: 8px; padding-top: 8px; color: #fff; font-weight: bold; }
-.dora-row { display: flex; justify-content: space-between; padding: 4px 0; }
 .fu-breakdown { padding-top: 8px;  }
 .fu-row { display: flex; justify-content: space-between; padding: 4px 0; font-style: italic; color: rgb(179, 179, 179); }
 .fu-total { padding: 4px 0; color: #fff; text-align: right; }
