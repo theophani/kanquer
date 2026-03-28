@@ -20,6 +20,7 @@ export type Hand =
 
 export type YakuResult = {
   name: string
+  description: string
   han: number
   openHan: number | null // han value when open; null if closed-only
 }
