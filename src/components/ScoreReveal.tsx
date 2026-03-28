@@ -35,6 +35,7 @@ export default function ScoreReveal() {
           {submittedSolution.yaku.map(y => (
             <div key={y.name} className="score-row">
               <span>{y.name}</span>
+              <span className="yaku-description">{y.description}</span>
               <span>{y.han} han</span>
             </div>
           ))}
