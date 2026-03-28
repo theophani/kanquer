@@ -12,12 +12,12 @@ export default function HomePage() {
         <p>Train your Riichi hand-building skills!</p>
         <p>Find the highest-scoring winning hand from 24 tiles.</p>
       </div>
-      <a href="?mode=daily" className="daily-button">
+      <a href="?mode=daily" className="mode-button daily-button">
         {dailyResult
           ? `Today's Puzzle — ${dailyResult.points.toLocaleString()} pts`
           : "Today's Puzzle"}
       </a>
-      <a href="?mode=random" className="practice-button">
+      <a href="?mode=random" className="mode-button practice-button">
         Practice
       </a>
     </div>

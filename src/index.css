@@ -5,10 +5,10 @@ body { margin: 0; font-family: system-ui, sans-serif; background: #1a1a2e; color
 .home-page h1 { font-size: 2.5rem; margin: 0; }
 .home-page .explanation { max-width: 25rem; text-align: left; font-size: 1.1rem; color: #ccc; }
 .home-page p { font-size: 1.2rem; margin: 1rem; }
-.daily-button, .practice-button { padding: 12px 32px; font-size: 1.1rem; border: none; border-radius: 8px; cursor: pointer; }
-.daily-button { background: #e67e22; color: #fff; text-decoration: none; }
+.mode-button { padding: 12px 32px; font-size: 1.1rem; border: none; border-radius: 8px; cursor: pointer; color: #fff; text-decoration: none; }
+.daily-button { background: #e67e22; }
 .daily-button:disabled { background: #555; cursor: default; }
-.practice-button { background: #2980b9; color: #fff; text-decoration: none; }
+.practice-button { background: #2980b9; }
 
 .game-page { max-width: 650px; margin: 0 auto; padding: 18px; }
 
