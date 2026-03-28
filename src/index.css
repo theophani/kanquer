@@ -56,7 +56,7 @@ button.tile { cursor: pointer; }
 .reset-button { background: #2980b9; }
 .commit-button { background: #27ae60; }
 
-.score-reveal { padding: 16px; } /* extends .panel — overrides padding */
+.score-reveal { padding: 16px; } /* co-applied with .panel — overrides its padding: 12px */
 .score-main { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
 .han { font-size: 1.8rem; font-weight: bold; color: #f39c12; }
 .points { font-size: 1.4rem; color: #e74c3c; }
