@@ -47,7 +47,7 @@ export default function ScoreReveal() {
           {fuComponents.length > 0 && (
             <div className="fu-breakdown">
               {fuComponents.map((c, i) => (
-                <div key={i} className="fu-row">
+                <div key={i} className="score-row fu-row">
                   <span>{c.label}</span>
                   <span>{c.fu} fu</span>
                 </div>

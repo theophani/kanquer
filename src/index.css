@@ -7,7 +7,7 @@ body { margin: 0; font-family: system-ui, sans-serif; background: #1a1a2e; color
 .home-page p { font-size: 1.2rem; margin: 1rem; }
 .mode-button { padding: 12px 32px; font-size: 1.1rem; border: none; border-radius: 8px; cursor: pointer; color: #fff; text-decoration: none; }
 .daily-button { background: #e67e22; }
-.daily-button:disabled { background: #555; cursor: default; }
+.daily-button:disabled { background: #555; cursor: default; } /* only daily can be disabled — after puzzle completed */
 .practice-button { background: #2980b9; }
 
 .game-page { max-width: 650px; margin: 0 auto; padding: 18px; }
@@ -52,11 +52,11 @@ button.tile { cursor: pointer; }
 .error-message { color: #e74c3c; font-size: 0.9rem; margin: 8px 0; }
 .hand-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 24px; }
 .action-button { padding: 12px; font-size: 1rem; color: #fff; border: none; border-radius: 6px; cursor: pointer; }
-.action-button:disabled { background: #555; color: #999; }
+.action-button:disabled { background: #555; color: #999; } /* higher specificity overrides .reset-button/.commit-button backgrounds */
 .reset-button { background: #2980b9; }
 .commit-button { background: #27ae60; }
 
-.score-reveal { padding: 16px; }
+.score-reveal { padding: 16px; } /* extends .panel — overrides padding */
 .score-main { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
 .han { font-size: 1.8rem; font-weight: bold; color: #f39c12; }
 .points { font-size: 1.4rem; color: #e74c3c; }
@@ -67,7 +67,7 @@ button.tile { cursor: pointer; }
 .score-row { display: flex; justify-content: space-between; padding: 4px 0; }
 .yaku-total { border-top: 1px solid #333; margin-top: 8px; padding-top: 8px; color: #fff; font-weight: bold; }
 .fu-breakdown { padding-top: 8px;  }
-.fu-row { display: flex; justify-content: space-between; padding: 4px 0; font-style: italic; color: rgb(179, 179, 179); }
+.fu-row { font-style: italic; color: rgb(179, 179, 179); }
 .fu-total { padding: 4px 0; color: #fff; text-align: right; }
 .optimal-hint { color: #3498db; font-size: 0.9rem; padding: 8px; background: #0a1a2a; border-radius: 4px; margin-bottom: 12px; }
 .result-footer { display: flex; justify-content: space-between; align-items: center; }
