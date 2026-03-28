@@ -16,7 +16,7 @@ export default function ScoreReveal() {
   const rawFu = fuComponents.reduce((sum, c) => sum + c.fu, 0)
 
   return (
-    <div className="score-reveal">
+    <div className="panel score-reveal">
       <div className="score-main">
         <span className="han">{submittedSolution.han} han</span>
         <span className="points">{submittedSolution.points.toLocaleString()} pts</span>

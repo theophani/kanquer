@@ -7,7 +7,7 @@ export default function TileGrid() {
   if (!puzzle) return null
 
   return (
-    <div className="tile-grid">
+    <div className="panel tile-grid">
       {puzzle.tiles.map((tile, i) => (
         <button
           key={i}

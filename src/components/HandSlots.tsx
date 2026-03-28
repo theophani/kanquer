@@ -17,7 +17,7 @@ export default function HandSlots() {
   const canReset = selectedIndices.length > lockedCount
 
   return (
-    <div className="hand-area">
+    <div className="panel">
       <div className="hand-slots">
         {lockedTiles.map((tile, i) => (
           <span key={`locked-${i}`} className="tile locked">
