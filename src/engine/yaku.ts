@@ -11,21 +11,21 @@ const YAKU_DESCRIPTIONS: Record<string, string> = {
   'Sanankou':         'Three concealed triplets',
   'Sanshoku Doujun':  'Same sequence across all three suits',
   'Sanshoku Doukou':  'Same triplet across all three suits',
-  'Ittsu':            'Straight 1–9 in one suit',
+  'Ittsuu':            'Straight 1–9 in one suit',
   'Junchan':          'Terminal in every meld and pair, no honors',
   'Chanta':           'Terminal or honor in every meld and pair',
   'Shousangen':       'Two dragon triplets plus dragon pair',
   'Honitsu':          'One numbered suit plus honors',
   'Chinitsu':         'One numbered suit only',
   'Chiitoitsu':       'Seven pairs',
-  'Kokushi':          'One of each terminal and honor',
+  'Kokushi':          'One of each terminal and honor (Thirteen Orphans)',
   'Daisangen':        'All three dragon triplets',
   'Shousuushii':      'Three wind triplets plus wind pair',
   'Daisuushii':       'All four wind triplets',
   'Tsuuiisou':        'All honor tiles',
   'Chinroutou':       'All terminals',
   'Ryuuiisou':        'All green tiles',
-  'Chuurenpoutou':    'Nine gates (1112345678999 in one suit)',
+  'Chuuren Poutou':    'Nine gates (1112345678999 in one suit)',
 }
 
 function y(name: string, han: number, openHan: number | null): YakuResult {
@@ -109,9 +109,9 @@ function detectStandardYaku(hand: Extract<Hand, { structure: 'standard' }>): Yak
   if (allTiles.every(t => GREEN.some(g => tileEquals(g, t))))
     return [y('Ryuuiisou', YAKUMAN, null)]
 
-  // Chuurenpoutou: 1112345678999 in one suit + 1 duplicate
-  const chuuren = detectChuurenpoutou(melds)
-  if (chuuren) return [y('Chuurenpoutou', YAKUMAN, null)]
+  // Chuuren Poutou: 1112345678999 in one suit + 1 duplicate
+  const chuuren = detectChuurenPoutou(melds)
+  if (chuuren) return [y('Chuuren Poutou', YAKUMAN, null)]
 
   // ── Regular yaku ─────────────────────────────────────────────────────────
 
@@ -160,9 +160,9 @@ function detectStandardYaku(hand: Extract<Hand, { structure: 'standard' }>): Yak
   const sanshokuDoukou = detectSanshokuDoukou(triplets)
   if (sanshokuDoukou) yaku.push(y('Sanshoku Doukou', 2, 2))
 
-  // Ittsu
-  const ittsu = detectIttsu(sequences)
-  if (ittsu) yaku.push(y('Ittsu', open ? 1 : 2, 1))
+  // Ittsuu
+  const ittsuu = detectIttsuu(sequences)
+  if (ittsuu) yaku.push(y('Ittsuu', open ? 1 : 2, 1))
 
   // Junchan: every meld + pair contains a terminal (1 or 9, no honors); at least one sequence
   // Detected before Chanta because Junchan supersedes it (Junchan is a stricter superset)
@@ -214,7 +214,7 @@ function detectSanshokuDoukou(triplets: Meld[]): boolean {
   return false
 }
 
-function detectIttsu(sequences: Meld[]): boolean {
+function detectIttsuu(sequences: Meld[]): boolean {
   const suits = ['man', 'pin', 'sou'] as const
   return suits.some(suit => {
     const suitSeqs = sequences.filter(s => s.tiles[0].suit === suit)
@@ -236,7 +236,7 @@ function detectChinitsu(tiles: Tile[]): boolean {
   return suits.size === 1 && !isHonor(tiles[0])
 }
 
-function detectChuurenpoutou(melds: Meld[]): boolean {
+function detectChuurenPoutou(melds: Meld[]): boolean {
   const tiles = melds.flatMap(m => m.tiles)
   if (melds.some(m => m.open)) return false
   const suits = new Set(tiles.map(t => t.suit))

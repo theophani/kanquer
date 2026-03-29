@@ -99,21 +99,21 @@ describe('Toitoi', () => {
   })
 })
 
-describe('Ittsu', () => {
-  it('detects ittsu (1-2-3, 4-5-6, 7-8-9 same suit)', () => {
+describe('Ittsuu', () => {
+  it('detects ittsuu (1-2-3, 4-5-6, 7-8-9 same suit)', () => {
     const hand = std([seq([m(1),m(2),m(3)]), seq([m(4),m(5),m(6)]), seq([m(7),m(8),m(9)]), seq([p(3),p(4),p(5)]), pair([s(5),s(5)])])
     const yaku = detectYaku(hand)
-    expect(yaku.map(y => y.name)).toContain('Ittsu')
-    expect(yaku.find(y => y.name === 'Ittsu')!.han).toBe(2)
+    expect(yaku.map(y => y.name)).toContain('Ittsuu')
+    expect(yaku.find(y => y.name === 'Ittsuu')!.han).toBe(2)
   })
-  it('ittsu loses 1 han when open', () => {
+  it('ittsuu loses 1 han when open', () => {
     const hand = std([seq([m(1),m(2),m(3)], open), seq([m(4),m(5),m(6)]), seq([m(7),m(8),m(9)]), seq([p(3),p(4),p(5)]), pair([s(5),s(5)])])
-    expect(detectYaku(hand).find(y => y.name === 'Ittsu')!.han).toBe(1)
+    expect(detectYaku(hand).find(y => y.name === 'Ittsuu')!.han).toBe(1)
   })
 })
 
 describe('Sanshoku Doujun', () => {
-  it('detects sanshoku doujun', () => {
+  it('detects Sanshoku Doujun', () => {
     const hand = std([seq([m(3),m(4),m(5)]), seq([p(3),p(4),p(5)]), seq([s(3),s(4),s(5)]), seq([m(7),m(8),m(9)]), pair([E,E])])
     expect(detectYaku(hand).map(y => y.name)).toContain('Sanshoku Doujun')
   })
