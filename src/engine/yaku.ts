@@ -1,5 +1,6 @@
 import type { Hand, Meld, Tile, YakuResult } from './types'
 import { tileEquals, isTerminalOrHonor, isHonor, isSimple, isTerminal } from './tiles'
+import { areCompatible } from './yakuCompatibility'
 
 const YAKU_DESCRIPTIONS: Record<string, string> = {
   'Tanyao':           'No terminals or honors',
@@ -193,7 +194,18 @@ function detectStandardYaku(hand: Extract<Hand, { structure: 'standard' }>): Yak
   const chinitsu = detectChinitsu(allTiles)
   if (chinitsu) yaku.push(y('Chinitsu', open ? 5 : 6, 5))
 
-  return yaku
+  return filterIncompatible(yaku)
+}
+
+function filterIncompatible(yaku: YakuResult[]): YakuResult[] {
+  const sorted = [...yaku].sort((a, b) => b.han - a.han)
+  const result: YakuResult[] = []
+  for (const candidate of sorted) {
+    if (result.every(r => areCompatible(r.name, candidate.name))) {
+      result.push(candidate)
+    }
+  }
+  return result
 }
 
 // ── Helpers ─────────────────────────────────────────────────────────────────

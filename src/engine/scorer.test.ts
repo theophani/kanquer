@@ -81,4 +81,51 @@ describe('scoreSelection', () => {
   })
 
   // TO DO: https://theophani.github.io/kanquer/?seed=8f9b1cbd does not know the true optimal solution and instead returns a suboptimal solution. This is a known issue with the current scoring implementation that only knows the solutions it created, and not actually all possible solutions.
+
+  describe('multiple yaku', () => {
+    it('detects Tanyao + Pinfu + Iipeikou together', () => {
+      // [2M 3M 4M] × 2, [5P 6P 7P], [3S 4S 5S], pair 8P — all simples, all sequences, two identical sequences
+      const tiles = [m(2),m(3),m(4), m(2),m(3),m(4), p(5),p(6),p(7), s(3),s(4),s(5), p(8),p(8)]
+      const sol = scoreSelection(tiles, [], [], ctx)!
+      const names = sol.yaku.map(y => y.name)
+      expect(names).toContain('Tanyao')
+      expect(names).toContain('Pinfu')
+      expect(names).toContain('Iipeikou')
+      expect(sol.han).toBe(3)
+    })
+
+    it('detects Sanshoku Doujun + Tanyao + Pinfu together', () => {
+      // [2-3-4] across all three suits + [5M 6M 7M], pair 8P
+      const tiles = [m(2),m(3),m(4), p(2),p(3),p(4), s(2),s(3),s(4), m(5),m(6),m(7), p(8),p(8)]
+      const sol = scoreSelection(tiles, [], [], ctx)!
+      const names = sol.yaku.map(y => y.name)
+      expect(names).toContain('Sanshoku Doujun')
+      expect(names).toContain('Tanyao')
+      expect(names).toContain('Pinfu')
+      expect(sol.han).toBe(4) // 2 + 1 + 1
+    })
+
+    it('detects Junchan and does not include Chanta', () => {
+      // Four sequences each touching a terminal, terminal pair, no honors — Junchan supersedes Chanta
+      const tiles = [m(1),m(2),m(3), m(7),m(8),m(9), p(1),p(2),p(3), p(7),p(8),p(9), s(1),s(1)]
+      const sol = scoreSelection(tiles, [], [], ctx)!
+      const names = sol.yaku.map(y => y.name)
+      expect(names).toContain('Junchan')
+      expect(names).not.toContain('Chanta')
+    })
+
+    it('detects Honitsu + Toitoi + Yakuhai + Sanankou on an open hand', () => {
+      // [2M 2M 2M] open, [5M 5M 5M], [8M 8M 8M], [Hatsu Hatsu Hatsu], pair [Haku Haku]
+      // One open meld prevents Suuankou; Hatsu triplet = Yakuhai; man + dragons = Honitsu
+      const tiles = [m(2),m(2),m(2), m(5),m(5),m(5), m(8),m(8),m(8), dragon('G'),dragon('G'),dragon('G'), dragon('W'),dragon('W')]
+      const openMeld = { type: 'triplet' as const, tiles: [m(2),m(2),m(2)], open: true }
+      const sol = scoreSelection(tiles, [openMeld], [], ctx)!
+      const names = sol.yaku.map(y => y.name)
+      expect(names).toContain('Honitsu')
+      expect(names).toContain('Toitoi')
+      expect(names).toContain('Yakuhai')
+      expect(names).toContain('Sanankou')
+      expect(sol.han).toBe(7) // 2 + 2 + 1 + 2
+    })
+  })
 })
