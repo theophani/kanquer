@@ -43,6 +43,13 @@ describe('scoreSelection', () => {
     expect(sol.points).toBe(32000)
   })
 
+  it('detects suuankou (four concealed triplets) and scores as yakuman', () => {
+    const tiles = [m(2),m(2),m(2), m(3),m(3),m(3), p(4),p(4),p(4), s(5),s(5),s(5), m(6),m(6)]
+    const sol = scoreSelection(tiles, [], [], ctx)!
+    expect(sol.yaku.map(y => y.name)).toContain('Suuankou')
+    expect(sol.points).toBe(32000)
+  })
+
   it('scores higher when seat wind is East (dealer)', () => {
     const tiles = [m(2),m(3),m(4), p(5),p(6),p(7), s(3),s(4),s(5), m(6),m(7),m(8), p(2),p(2)]
     const ctxDealer = { seatWind: 'E' as const, roundWind: 'E' as const }

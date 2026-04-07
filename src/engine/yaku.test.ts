@@ -89,8 +89,8 @@ describe('Iipeikou', () => {
 })
 
 describe('Toitoi', () => {
-  it('detects toitoi (all triplets)', () => {
-    const hand = std([tri([m(1),m(1),m(1)]), tri([p(5),p(5),p(5)]), tri([s(9),s(9),s(9)]), tri([E,E,E]), pair([Haku,Haku])])
+  it('detects toitoi (all triplets, at least one open)', () => {
+    const hand = std([tri([m(1),m(1),m(1)], open), tri([p(5),p(5),p(5)]), tri([s(9),s(9),s(9)]), tri([E,E,E]), pair([Haku,Haku])])
     expect(detectYaku(hand).map(y => y.name)).toContain('Toitoi')
   })
   it('no toitoi when a sequence exists', () => {
@@ -171,7 +171,7 @@ describe('Daisangen', () => {
 
 describe('Tsuuiisou', () => {
   it('detects tsuuiisou (all honors, yakuman)', () => {
-    const hand = std([tri([E,E,E]), tri([S,S,S]), tri([W,W,W]), tri([Haku,Haku,Haku]), pair([Chun,Chun])])
+    const hand = std([tri([E,E,E], open), tri([S,S,S]), tri([W,W,W]), tri([Haku,Haku,Haku]), pair([Chun,Chun])])
     expect(detectYaku(hand).find(y => y.name === 'Tsuuiisou')!.han).toBe(13)
   })
 })

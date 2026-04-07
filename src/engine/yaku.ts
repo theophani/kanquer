@@ -20,6 +20,7 @@ const YAKU_DESCRIPTIONS: Record<string, string> = {
   'Chiitoitsu':       'Seven pairs',
   'Kokushi':          'One of each terminal and honor (Thirteen Orphans)',
   'Daisangen':        'All three dragon triplets',
+  'Suuankou':         'Four concealed triplets',
   'Shousuushii':      'Three wind triplets plus wind pair',
   'Daisuushii':       'All four wind triplets',
   'Tsuuiisou':        'All honor tiles',
@@ -83,6 +84,10 @@ function detectStandardYaku(hand: Extract<Hand, { structure: 'standard' }>): Yak
   const dragonTriplets = triplets.filter(m => m.tiles[0].suit === 'dragon')
   if (dragonTriplets.length === 3)
     return [y('Daisangen', YAKUMAN, null)]
+
+  // Suuankou: 4 concealed triplets
+  if (concealedTriplets.length === 4)
+    return [y('Suuankou', YAKUMAN, null)]
 
   // Shousuushii: triplets of 3 winds + wind pair
   const windTriplets = triplets.filter(m => m.tiles[0].suit === 'wind')
