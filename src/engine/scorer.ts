@@ -33,23 +33,13 @@ export function scoreSelection(
 }
 
 export function hanFuToPoints(han: number, fu: number, dealer: boolean): number {
-  if (dealer) {
-    if (han >= 13) return 48000
-    if (han >= 11) return 36000
-    if (han >= 8)  return 24000
-    if (han >= 6)  return 18000
-    if (han >= 5)  return 12000
-    const raw = fu * Math.pow(2, han + 2)
-    if (raw >= 2000) return 12000
-    return Math.ceil(raw * 6 / 100) * 100
-  } else {
-    if (han >= 13) return 32000
-    if (han >= 11) return 24000
-    if (han >= 8)  return 16000
-    if (han >= 6)  return 12000
-    if (han >= 5)  return 8000
-    const raw = fu * Math.pow(2, han + 2)
-    if (raw >= 2000) return 8000
-    return Math.ceil(raw * 4 / 100) * 100
-  }
+  const scoringFactor = dealer ? 1.5 : 1
+  if (han >= 13) return 32000 * scoringFactor
+  if (han >= 11) return 24000 * scoringFactor
+  if (han >= 8)  return 16000 * scoringFactor
+  if (han >= 6)  return 12000 * scoringFactor
+  if (han >= 5)  return 8000 * scoringFactor
+  const raw = fu * Math.pow(2, han + 2)
+  if (raw >= 2000) return 8000 * scoringFactor
+  return Math.ceil(raw * 4 * scoringFactor / 100) * 100
 }
