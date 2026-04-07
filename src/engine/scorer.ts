@@ -40,9 +40,8 @@ export function hanFuToPoints(han: number, fu: number, dealer: boolean): number 
     if (han >= 6)  return 18000
     if (han >= 5)  return 12000
     const raw = fu * Math.pow(2, han + 2)
-    if (raw >= 8000) return 12000
-    const ndPts = Math.ceil(raw / 100) * 100
-    return Math.ceil(ndPts * 1.5 / 100) * 100
+    if (raw >= 2000) return 12000
+    return Math.ceil(raw * 6 / 100) * 100
   } else {
     if (han >= 13) return 32000
     if (han >= 11) return 24000
@@ -50,7 +49,7 @@ export function hanFuToPoints(han: number, fu: number, dealer: boolean): number 
     if (han >= 6)  return 12000
     if (han >= 5)  return 8000
     const raw = fu * Math.pow(2, han + 2)
-    if (raw >= 8000) return 8000
-    return Math.ceil(raw / 100) * 100
+    if (raw >= 2000) return 8000
+    return Math.ceil(raw * 4 / 100) * 100
   }
 }

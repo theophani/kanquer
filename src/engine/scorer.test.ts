@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { m, p, s, E, wind, dragon } from './tiles'
-import { scoreSelection } from './scorer'
+import { scoreSelection, hanFuToPoints } from './scorer'
 
 const ctx = { seatWind: 'S' as const, roundWind: 'E' as const }
 
@@ -128,4 +128,62 @@ describe('scoreSelection', () => {
       expect(sol.han).toBe(7) // 2 + 2 + 1 + 2
     })
   })
+})
+
+describe('hanFuToPoints', () => {
+  // Each tuple: [han, fu, dealer, expectedPoints]
+  // Expected values taken from the standard riichi scoring table (ron payment).
+  const cases: [number, number, boolean, number][] = [
+    // ── non-dealer ────────────────────────────────────────────────────────────
+    [1, 25, false,   800],
+    [1, 30, false,  1000],
+    [1, 40, false,  1300],
+    [1, 50, false,  1600],
+    [2, 25, false,  1600],
+    [2, 30, false,  2000],
+    [2, 40, false,  2600],
+    [2, 50, false,  3200],
+    [3, 30, false,  3900],
+    [3, 40, false,  5200],
+    [3, 60, false,  7700],
+    [3, 70, false,  8000], // base 2240 ≥ 2000 → mangan
+    [4, 20, false,  5200],
+    [4, 30, false,  7700],
+    [4, 40, false,  8000], // base 2560 ≥ 2000 → mangan
+    [5, 30, false,  8000],
+    [6, 30, false, 12000],
+    [7, 30, false, 12000],
+    [8, 30, false, 16000],
+   [11, 30, false, 24000],
+   [13, 30, false, 32000],
+
+    // ── dealer ────────────────────────────────────────────────────────────────
+    [1, 25, true,   1200],
+    [1, 30, true,   1500],
+    [1, 40, true,   2000],
+    [1, 50, true,   2400],
+    [2, 25, true,   2400],
+    [2, 30, true,   2900],
+    [2, 40, true,   3900],
+    [2, 50, true,   4800],
+    [3, 30, true,   5800],
+    [3, 40, true,   7700],
+    [3, 60, true,  11600],
+    [3, 70, true,  12000], // base 2240 ≥ 2000 → mangan
+    [4, 20, true,   7700],
+    [4, 30, true,  11600],
+    [4, 40, true,  12000], // base 2560 ≥ 2000 → mangan
+    [5, 30, true,  12000],
+    [6, 30, true,  18000],
+    [7, 30, true,  18000],
+    [8, 30, true,  24000],
+   [11, 30, true,  36000],
+   [13, 30, true,  48000],
+  ]
+
+  for (const [han, fu, dealer, expected] of cases) {
+    it(`${han} han ${fu} fu ${dealer ? 'dealer' : 'non-dealer'} → ${expected}`, () => {
+      expect(hanFuToPoints(han, fu, dealer)).toBe(expected)
+    })
+  }
 })
