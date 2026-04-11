@@ -1,6 +1,6 @@
 import { useGameStore } from '../store/gameStore'
 import { tileDisplay } from './tileDisplay'
-import { tileImage } from './tileImage'
+import TileView from './TileView'
 
 export default function TileGrid() {
   const { puzzle, selectedIndices, lockedIndices, phase, toggleTile } = useGameStore()
@@ -9,20 +9,17 @@ export default function TileGrid() {
   return (
     <div className="panel tile-grid">
       {puzzle.tiles.map((tile, i) => (
-        <button
+        <TileView
           key={i}
+          tile={tile}
           className={[
-            'tile',
             selectedIndices.includes(i) ? 'selected' : '',
             lockedIndices.has(i) ? 'locked' : '',
-          ].join(' ')}
+          ].filter(Boolean).join(' ') || undefined}
           onClick={() => phase !== 'committed' && toggleTile(i)}
           disabled={phase === 'committed'}
           aria-label={tileDisplay(tile)}
-        >
-          <span className='tile-label'>{tile.value}</span>
-          <img src={tileImage(tile)} alt={tileDisplay(tile)} />
-        </button>
+        />
       ))}
     </div>
   )
