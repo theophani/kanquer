@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useGameStore } from '../store/gameStore'
-import { tileDisplay } from './tileDisplay'
-import { tileImage } from './tileImage'
+import TileView from './TileView'
 
 function windLabel(w: string): string {
   return { E: 'East', S: 'South', W: 'West', N: 'North' }[w] ?? w
@@ -57,10 +56,7 @@ export default function ContextBar() {
       <div className="context-bar-section">
         <span className="dora-label">Dora Indicator{puzzle.doraIndicators.length > 1 ? 's' : ''}</span>
         {puzzle.doraIndicators.map((tile, i) => (
-          <span key={i} className="tile">
-            <span className='tile-label'>{tile.value}</span>
-            <img src={tileImage(tile)} alt={tileDisplay(tile)} />
-          </span>
+          <TileView key={i} tile={tile} />
         ))}
       </div>
       <div className="context-bar-section context-bar-timer">
