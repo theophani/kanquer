@@ -38,6 +38,7 @@ describe('Tanyao', () => {
   })
 })
 
+// TODO: add a test for multiple Yakuhai in one hand (e.g. seat wind + round wind + dragon) to verify han are added correctly
 describe('Yakuhai', () => {
   it('detects yakuhai for own seat wind triplet', () => {
     const hand = std([tri([E,E,E]), seq([m(2),m(3),m(4)]), seq([p(5),p(6),p(7)]), seq([s(3),s(4),s(5)]), pair([m(8),m(8)])], 'E', 'S')

@@ -63,7 +63,7 @@ export default function ContextBar() {
         ))}
       </div>
       <div className="context-bar-section context-bar-timer">
-        {/* TO DO: The timer should save between sessions */}
+        {/* TODO: The timer should save between sessions */}
         <span className="timer">{mm}:{ss}</span>
       </div>
     </div>
