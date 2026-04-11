@@ -20,6 +20,7 @@ export default function TileGrid() {
           disabled={phase === 'committed'}
           aria-label={tileDisplay(tile)}
         >
+          <span className='tile-label'>{tile.value}</span>
           <img src={tileImage(tile)} alt={tileDisplay(tile)} />
         </button>
       ))}

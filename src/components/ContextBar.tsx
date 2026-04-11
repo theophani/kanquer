@@ -56,9 +56,10 @@ export default function ContextBar() {
       </div>
       <div className="context-bar-section">
         <span className="dora-label">Dora Indicator{puzzle.doraIndicators.length > 1 ? 's' : ''}</span>
-        {puzzle.doraIndicators.map((t, i) => (
+        {puzzle.doraIndicators.map((tile, i) => (
           <span key={i} className="tile">
-            <img src={tileImage(t)} alt={tileDisplay(t)} />
+            <span className='tile-label'>{tile.value}</span>
+            <img src={tileImage(tile)} alt={tileDisplay(tile)} />
           </span>
         ))}
       </div>

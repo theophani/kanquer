@@ -21,6 +21,7 @@ export default function HandSlots() {
       <div className="hand-slots">
         {lockedTiles.map((tile, i) => (
           <span key={`locked-${i}`} className="tile locked">
+            <span className='tile-label'>{tile.value}</span>
             <img src={tileImage(tile)} alt={tileDisplay(tile)} />
           </span>
         ))}
@@ -32,6 +33,7 @@ export default function HandSlots() {
             onClick={() => toggleTile(index)}
             disabled={phase === 'committed'}
           >
+            <span className='tile-label'>{tile.value}</span>
             <img src={tileImage(tile)} alt={tileDisplay(tile)} />
           </button>
         ))}
