@@ -2,13 +2,23 @@ import type { Tile } from '../engine/types'
 import { tileDisplay } from './tileDisplay'
 import { tileImage } from './tileImage'
 
-interface Props {
+type StaticProps = {
   tile: Tile
   className?: string
-  onClick?: () => void
+  onClick?: never
+  disabled?: never
+  'aria-label'?: string
+}
+
+type InteractiveProps = {
+  tile: Tile
+  className?: string
+  onClick: () => void
   disabled?: boolean
   'aria-label'?: string
 }
+
+type Props = StaticProps | InteractiveProps
 
 export default function TileView({ tile, className, onClick, disabled, 'aria-label': ariaLabel }: Props) {
   const cls = ['tile', className].filter(Boolean).join(' ')
