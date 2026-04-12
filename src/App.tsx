@@ -4,6 +4,7 @@ import { generatePuzzle } from './engine/generator'
 import { seedFromPuzzleNumber, seedFromHex, puzzleNumberFromDate, dateFromPuzzleNumber } from './engine/seed'
 import HomePage from './components/HomePage'
 import GamePage from './components/GamePage'
+import ThemeToggle from './components/ThemeToggle'
 
 export default function App() {
   const { puzzle, loadPuzzle } = useGameStore()
@@ -60,6 +61,8 @@ export default function App() {
   }, [])
 
   if (loading) return null
-  if (!puzzle) return <HomePage />
-  return <GamePage />
+  return <>
+    {!puzzle ? <HomePage /> : <GamePage />}
+    <ThemeToggle />
+  </>
 }
