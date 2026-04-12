@@ -7,7 +7,7 @@ export function tileImage(tile: Tile): string {
   if (tile.suit === 'pin') return `${base}/tiles/Pin${tile.value}.svg`
   if (tile.suit === 'sou') return `${base}/tiles/Sou${tile.value}.svg`
   if (tile.suit === 'wind') {
-    const map: Record<string, string> = { E: 'Ton', S: 'Nan', W: 'Sha', N: 'Pei' }
+    const map: Record<string, string> = { E: 'Ton', S: 'Nan', W: 'Shaa', N: 'Pei' }
     return `${base}/tiles/${map[tile.value]}.svg`
   }
   // dragon
