@@ -142,10 +142,23 @@ button.tile { cursor: pointer; text-align: left;  }
 .elapsed { color: var(--text-muted); font-size: 0.9rem; }
 .share-results-button { background: var(--action-primary); color: #fff; border: none; border-radius: 6px; padding: 8px 16px; cursor: pointer; }
 
+.settings {
+  margin: 2em 0 1em 0;
+}
+.settings-label {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  margin-right: 8px;
+}
+
+.settings > button {
+  opacity: 0;
+}
+
+.settings:hover > button {
+  opacity: 1;
+}
 .theme-toggle {
-  position: fixed;
-  bottom: 16px;
-  left: 16px;
   background: var(--bg-panel);
   border: 1px solid var(--border-subtle);
   color: var(--text-muted);
@@ -153,6 +166,5 @@ button.tile { cursor: pointer; text-align: left;  }
   padding: 5px 10px;
   font-size: 0.75rem;
   cursor: pointer;
-  z-index: 100;
 }
 .theme-toggle:hover { color: var(--text-primary); border-color: var(--border-strong); }

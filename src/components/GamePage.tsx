@@ -4,6 +4,7 @@ import TileGrid from './TileGrid'
 import HandSlots from './HandSlots'
 import ScoreReveal from './ScoreReveal'
 import { useGameStore } from '../store/gameStore'
+import Settings from './Settings'
 
 export default function GamePage() {
   const { phase } = useGameStore()
@@ -14,6 +15,8 @@ export default function GamePage() {
       <TileGrid />
       <HandSlots />
       {phase === 'committed' && <ScoreReveal />}
+
+      <Settings />
     </div>
   )
 }
