@@ -145,6 +145,16 @@ export function generatePuzzle(seed: number, maxRetries = 20): Puzzle {
   throw new Error(`generatePuzzle: failed after ${hardCap} attempts (seed=${seed})`)
 }
 
+/*
+  TODO: The generator should work like this:
+  1. Select one or two Dora indicators.
+  2. Determine with some weighting whether Dora will be part of the solution, and if so, which one(s). (This will lead to Dora being more likely than totally random, which is like real games where players might build hands around Dora.)
+  3. Generate handA with a random template. Use the probablity of open melds to filter to exclude closed templates, and select which melds to make open. If using Dora, bias the generation towards including the Dora tile(s).
+  4. Select one or two melds from handA, and use that to inform the generation of handB, which should share those meld but otherwise be different. This ensures that both hands are actually present in the tile pool, and creates interesting interactions between the two hands.
+  5. Merge handA and handB into a combined pool of tiles, deduplicating beyond the shared meld(s) but allowing up to 4 of each tile as normal. This creates a pool of tiles that is guaranteed to contain at least two valid solutions (handA and handB), but may contain more.
+  6. If there are more than 3 tile spaces left in the pool after merging handA and handB, consider adding a third handC using the same process, to increase the number of solutions and complexity of the puzzle.
+  7. Pad the combined pool with random tiles until we have 24 total, then shuffle.
+*/
 function tryGenerate(rng: () => number): Puzzle | null {
   const roundWind = pickWeighted(rng, ['E', 'S', 'W', 'N'] as WindValue[], [60, 25, 10, 5])
   const winds: WindValue[] = ['E', 'S', 'W', 'N']
@@ -152,6 +162,7 @@ function tryGenerate(rng: () => number): Puzzle | null {
   const ctx = { seatWind, roundWind }
 
   // Pick two different templates
+  // TODO: introduce concept of likelihood so that rare hands (chinitsu, honitsu) aren't overshadowed by common ones (tanyao)
   const shuffledTemplates = shuffle(TEMPLATES, rng)
   const templateA = shuffledTemplates[0]
   const templateB = shuffledTemplates[1]
@@ -161,8 +172,17 @@ function tryGenerate(rng: () => number): Puzzle | null {
   if (!tilesA || !tilesB) return null
 
   // Decide open melds (0–2); only from non-closed templates
+  // TODO: use the PROBABILITY_OF_OPEN_MELDS to weight the likelihood of each template being open vs closed, rather than deciding open/closed first and then picking templates independently of that
+  // FIX: this logic is totally flawed. It should open melds, not just copy the first 3 tiles from the hand. Right now, it only creates open sequences, and never open triplets.
+  // Additionally, it is deciding to open one meld from templateA and one from templateB, which means it might create a puzzle with no valid solution.
+  const PROBABILITY_OF_OPEN_MELDS = 0.9
+  const PROBABILITY_OF_TWO_OPEN_MELDS = 0.8
   const lockedMelds: Meld[] = []
-  const openCount = rng() < 0.4 ? (rng() < 0.5 ? 1 : 2) : 0
+  const meldsProb = rng()
+  const openCount = meldsProb < PROBABILITY_OF_OPEN_MELDS ? (meldsProb < PROBABILITY_OF_TWO_OPEN_MELDS ? 2 : 1) : 0
+//  console.log(openCount)
+//  console.log(templateA.closed, templateB.closed)
+//  console.log(tilesA, tilesB)
   if (openCount > 0 && !templateA.closed) {
     lockedMelds.push({ type: 'sequence', tiles: tilesA.slice(0, 3), open: true })
   }
@@ -189,7 +209,8 @@ function tryGenerate(rng: () => number): Puzzle | null {
   const allTiles = shuffle(combined.slice(0, 24), rng)
 
   // Draw dora indicators
-  const doraCount = rng() < 0.8 ? 1 : 2
+  const PROBABILITY_OF_TWO_DORA = 0.2
+  const doraCount = rng() < PROBABILITY_OF_TWO_DORA ? 2 : 1
   const doraPool = shuffle(allTiles, rng)
   const doraIndicators = doraPool.slice(0, doraCount)
 
