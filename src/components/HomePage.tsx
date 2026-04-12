@@ -14,8 +14,8 @@ export default function HomePage() {
       </div>
       <a href="?mode=daily" className="mode-button daily-button">
         {dailyResult
-          ? `Today's Puzzle — ${dailyResult.points.toLocaleString()} pts`
-          : "Today's Puzzle"}
+          ? `Today’s Puzzle — ${dailyResult.points.toLocaleString()} pts`
+          : "Today’s Puzzle"}
       </a>
       <a href="?mode=random" className="mode-button practice-button">
         Practice

@@ -6,7 +6,7 @@ export default function HandSlots() {
   const { puzzle, selectedIndices, lockedIndices, phase, commitHand, resetHand, errorMessage, toggleTile } = useGameStore()
   if (!puzzle) return null
 
-  const lockedTiles = [...lockedIndices].sort((a, b) => a - b).map(i => puzzle.tiles[i])
+  const lockedTiles = puzzle.lockedMelds.filter(meld => meld.open).flatMap(meld => meld.tiles)
   const freeTileEntries = [...selectedIndices]
     .filter(i => !lockedIndices.has(i))
     .map(i => ({ index: i, tile: puzzle.tiles[i] }))
