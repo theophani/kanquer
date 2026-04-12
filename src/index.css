@@ -109,4 +109,4 @@ button.tile { cursor: pointer; text-align: left;  }
 .optimal-hint { color: var(--text-accent); font-size: 0.9rem; padding: 8px; background: var(--bg-hint); border-radius: 4px; margin-bottom: 12px; }
 .result-footer { display: flex; justify-content: space-between; align-items: center; }
 .elapsed { color: var(--text-muted); font-size: 0.9rem; }
-.share-button { background: var(--action-primary); color: #fff; border: none; border-radius: 6px; padding: 8px 16px; cursor: pointer; }
+.share-results-button { background: var(--action-primary); color: #fff; border: none; border-radius: 6px; padding: 8px 16px; cursor: pointer; }
