@@ -1,4 +1,4 @@
-# Kanquer Fixes Implementation Plan
+# Miniichi Fixes Implementation Plan
 
 > **For agentic workers:** REQUIRED: Use superpowers:subagent-driven-development (if subagents available) or superpowers:executing-plans to implement this plan. Steps use checkbox (`- [ ]`) syntax for tracking.
 
@@ -62,7 +62,7 @@ it('yakuman returns 32000 points', () => {
 - [ ] **Step 1.2: Run tests to confirm failure**
 
 ```bash
-cd /Users/tiffany/PersonalProjects/kanquer && npx vitest run src/engine/scorer.test.ts
+cd /Users/tiffany/PersonalProjects/miniichi && npx vitest run src/engine/scorer.test.ts
 ```
 
 Expected: dealer test fails (dealer === nonDealer currently). Yakuman test passes if seatWind is already 'S', otherwise fails.
@@ -466,7 +466,7 @@ export const useGameStore = create<GameState>((set, get) => ({
     set({ phase: 'committed', elapsed, submittedSolution: sol, errorMessage: null })
 
     if (get().mode === 'daily') {
-      const key = `kanquer-daily-${new Date().toISOString().slice(0, 10)}`
+      const key = `miniichi-daily-${new Date().toISOString().slice(0, 10)}`
       localStorage.setItem(key, JSON.stringify({
         points: sol.points,
         elapsed,
@@ -743,7 +743,7 @@ Replace entire file:
 
 ```typescript
 export default function HomePage() {
-  const cacheKey = `kanquer-daily-${new Date().toISOString().slice(0, 10)}`
+  const cacheKey = `miniichi-daily-${new Date().toISOString().slice(0, 10)}`
   const dailyCache = localStorage.getItem(cacheKey)
   const dailyResult: { points: number; elapsed: number } | null = dailyCache
     ? JSON.parse(dailyCache)
@@ -751,7 +751,7 @@ export default function HomePage() {
 
   return (
     <div className="home-page">
-      <h1>Kanquer</h1>
+      <h1>Miniichi</h1>
       <p>Find the highest-scoring winning hand from 24 tiles.</p>
       <a href="/daily" className="daily-button">
         {dailyResult
@@ -791,7 +791,7 @@ export default function App() {
       const n = puzzleNumberFromDate(new Date())
       const seed = seedFromPuzzleNumber(n)
       const puzz = generatePuzzle(seed)
-      const key = `kanquer-daily-${new Date().toISOString().slice(0, 10)}`
+      const key = `miniichi-daily-${new Date().toISOString().slice(0, 10)}`
       const cached = localStorage.getItem(key)
       if (cached) {
         const saved = JSON.parse(cached)

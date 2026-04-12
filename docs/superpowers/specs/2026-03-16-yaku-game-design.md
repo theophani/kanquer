@@ -1,4 +1,4 @@
-# Kanquer — Yaku Recognition Game: Design Spec
+# Miniichi — Yaku Recognition Game: Design Spec
 
 **Date:** 2026-03-16
 **Status:** Approved
@@ -7,7 +7,7 @@
 
 ## Overview
 
-Kanquer is a browser-based mini-game to help players learn to recognize Riichi Mahjong yaku and scoring. Each puzzle presents 24 tiles; the player selects a valid 14-tile winning hand, and the game scores it automatically. The goal is to find the highest-scoring hand possible within the time limit. Results can be shared with friends in a spoiler-free format.
+Miniichi is a browser-based mini-game to help players learn to recognize Riichi Mahjong yaku and scoring. Each puzzle presents 24 tiles; the player selects a valid 14-tile winning hand, and the game scores it automatically. The goal is to find the highest-scoring hand possible within the time limit. Results can be shared with friends in a spoiler-free format.
 
 ---
 
@@ -225,9 +225,9 @@ Minimal: game title, **Today's Puzzle** button (greyed out with your score shown
 Spoiler-free Wordle-style share text. No tiles or yaku names revealed.
 
 ```
-Kanquer #42 ⭐
+Miniichi #42 ⭐
 12,000 pts · 1:42
-https://kanquer.app/?p=42
+https://miniichi.app/?p=42
 ```
 
 - ⭐ appears only if the player found the optimal hand

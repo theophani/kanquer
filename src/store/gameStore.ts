@@ -134,7 +134,7 @@ export const useGameStore = create<GameState>((set, get) => ({
     set({ phase: 'committed', elapsed, submittedSolution: sol, errorMessage: null })
 
     if (get().mode === 'daily') {
-      const key = `kanquer-daily-${new Date().toISOString().slice(0, 10)}`
+      const key = `miniichi-daily-${new Date().toISOString().slice(0, 10)}`
       localStorage.setItem(key, JSON.stringify({
         points: sol.points,
         elapsed,

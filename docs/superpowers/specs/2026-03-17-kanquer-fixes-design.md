@@ -1,10 +1,10 @@
-# Kanquer Fixes & Improvements — Design Spec
+# Miniichi Fixes & Improvements — Design Spec
 
 **Date:** 2026-03-17
 
 ## Overview
 
-Six improvements to the Kanquer Riichi Mahjong puzzle app, addressing bugs in tile selection and timer behavior, adding missing features (reset button, dealer scoring), improving navigation semantics (buttons → links), and expanding test coverage.
+Six improvements to the Miniichi Riichi Mahjong puzzle app, addressing bugs in tile selection and timer behavior, adding missing features (reset button, dealer scoring), improving navigation semantics (buttons → links), and expanding test coverage.
 
 ---
 
@@ -153,7 +153,7 @@ Routing priority (evaluated in order):
 
 1. `pathname === '/daily'` → call `handleDaily()`:
    - Compute today's puzzle number via `puzzleNumberFromDate` (timezone-safe, from `seed.ts`)
-   - Check localStorage for `kanquer-daily-YYYY-MM-DD`
+   - Check localStorage for `miniichi-daily-YYYY-MM-DD`
    - If **solved**: load puzzle in committed state (see below), `replaceState('/?p=N')`
    - If **not solved**: generate puzzle, call `loadPuzzle`, `replaceState('/?p=N')`
 

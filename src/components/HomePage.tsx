@@ -1,5 +1,5 @@
 export default function HomePage() {
-  const cacheKey = `kanquer-daily-${new Date().toISOString().slice(0, 10)}`
+  const cacheKey = `miniichi-daily-${new Date().toISOString().slice(0, 10)}`
   const dailyCache = localStorage.getItem(cacheKey)
   const dailyResult: { points: number; elapsed: number } | null = dailyCache
     ? JSON.parse(dailyCache)
@@ -7,7 +7,7 @@ export default function HomePage() {
 
   return (
     <div className="home-page">
-      <h1>🀄️🀄️ Kanquer 🀄️🀄️</h1>
+      <h1>🀄️🀄️ Miniichi 🀄️🀄️</h1>
       <div className="explanation">
         <p>Train your Riichi hand-building skills!</p>
         <p>Find the highest-scoring winning hand from 24 tiles.</p>

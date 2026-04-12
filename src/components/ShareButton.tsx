@@ -19,12 +19,12 @@ export default function ShareButton() {
     if (mode === 'daily') {
       // Use the puzzle number from the URL param (not today's date) so past daily links work correctly
       const n = params.get('p') ?? String(puzzleNumberFromDate(new Date()))
-      lines.push(`Kanquer #${n}${isOptimal ? ' ⭐' : ''}`)
+      lines.push(`Miniichi #${n}${isOptimal ? ' ⭐' : ''}`)
       lines.push(`${submittedSolution!.points.toLocaleString()} pts · ${mm}:${ss}`)
       lines.push(`${base}?p=${n}`)
     } else {
       const seedHex = params.get('seed') ?? 'practice'
-      lines.push(`Kanquer Practice${isOptimal ? ' ⭐' : ''}`)
+      lines.push(`Miniichi Practice${isOptimal ? ' ⭐' : ''}`)
       lines.push(`${submittedSolution!.points.toLocaleString()} pts · ${mm}:${ss}`)
       lines.push(`${base}?seed=${seedHex}`)
     }

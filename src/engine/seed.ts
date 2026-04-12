@@ -1,7 +1,7 @@
 // Launch date — set this to the actual launch date when deploying
 export const LAUNCH_DATE = new Date('2026-01-01T00:00:00Z')
 
-const PUZZLE_SALT = 'kanquer-v1'
+const PUZZLE_SALT = 'miniichi-v1'
 
 export function puzzleNumberFromDate(date: Date): number {
   const msPerDay = 24 * 60 * 60 * 1000

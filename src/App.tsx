@@ -14,7 +14,7 @@ export default function App() {
       const seed = seedFromPuzzleNumber(n)
       const puzz = generatePuzzle(seed)
       const puzzleDate = dateFromPuzzleNumber(n).toISOString().slice(0, 10)
-      const key = `kanquer-daily-${puzzleDate}`
+      const key = `miniichi-daily-${puzzleDate}`
       const cached = localStorage.getItem(key)
       if (cached) {
         const saved = JSON.parse(cached)

@@ -1,4 +1,4 @@
-# Kanquer Implementation Plan
+# Miniichi Implementation Plan
 
 > **For agentic workers:** REQUIRED: Use superpowers:subagent-driven-development (if subagents available) or superpowers:executing-plans to implement this plan. Steps use checkbox (`- [ ]`) syntax for tracking.
 
@@ -1502,7 +1502,7 @@ Expected: FAIL
 // Launch date — set this to the actual launch date when deploying
 export const LAUNCH_DATE = new Date('2026-01-01T00:00:00Z')
 
-const PUZZLE_SALT = 'kanquer-v1'
+const PUZZLE_SALT = 'miniichi-v1'
 
 export function puzzleNumberFromDate(date: Date): number {
   const msPerDay = 24 * 60 * 60 * 1000
@@ -2457,12 +2457,12 @@ export default function ShareButton() {
     if (mode === 'daily') {
       // Use the puzzle number from the URL param (not today's date) so past daily links work correctly
       const n = params.get('p') ?? String(puzzleNumberFromDate(new Date()))
-      lines.push(`Kanquer #${n}${isOptimal ? ' ⭐' : ''}`)
+      lines.push(`Miniichi #${n}${isOptimal ? ' ⭐' : ''}`)
       lines.push(`${submittedSolution!.points.toLocaleString()} pts · ${mm}:${ss}`)
       lines.push(`${window.location.origin}/?p=${n}`)
     } else {
       const seedHex = params.get('seed') ?? 'practice'
-      lines.push(`Kanquer Practice${isOptimal ? ' ⭐' : ''}`)
+      lines.push(`Miniichi Practice${isOptimal ? ' ⭐' : ''}`)
       lines.push(`${submittedSolution!.points.toLocaleString()} pts · ${mm}:${ss}`)
       lines.push(`${window.location.origin}/?seed=${seedHex}`)
     }
@@ -2514,7 +2514,7 @@ import { generatePuzzle } from '../engine/generator'
 import { seedFromPuzzleNumber, seedFromHex, puzzleNumberFromDate } from '../engine/seed'
 
 function getDailyCacheKey(): string {
-  return `kanquer-daily-${new Date().toISOString().slice(0, 10)}`
+  return `miniichi-daily-${new Date().toISOString().slice(0, 10)}`
 }
 
 export default function HomePage() {
@@ -2543,7 +2543,7 @@ export default function HomePage() {
 
   return (
     <div className="home-page">
-      <h1>Kanquer</h1>
+      <h1>Miniichi</h1>
       <p>Find the highest-scoring winning hand from 24 tiles.</p>
       <button className="daily-button" onClick={startDaily} disabled={!!dailyResult}>
         {dailyResult
@@ -2565,7 +2565,7 @@ In `gameStore.ts`, after a successful `commitHand` in daily mode, save the resul
 Add inside the `commitHand` function, after `set(...)` for a valid solution:
 ```ts
 if (get().mode === 'daily') {
-  const key = `kanquer-daily-${new Date().toISOString().slice(0, 10)}`
+  const key = `miniichi-daily-${new Date().toISOString().slice(0, 10)}`
   localStorage.setItem(key, JSON.stringify({ points: sol.points, elapsed }))
 }
 ```
@@ -2620,5 +2620,5 @@ npm run build
 
 ```bash
 git add .
-git commit -m "feat: complete Kanquer v1 — yaku recognition game"
+git commit -m "feat: complete Miniichi v1 — yaku recognition game"
 ```

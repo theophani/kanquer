@@ -18,7 +18,7 @@ export default function GameHeader() {
 
   return (
     <header className="game-header">
-      <a href="./" className="game-header-home">Kanquer</a>
+      <a href="./" className="game-header-home">Miniichi</a>
       <span className="puzzle-label">{puzzleLabel}</span>
       <nav className="game-header-nav">
         <a href="?mode=daily" className="daily">Daily</a>
